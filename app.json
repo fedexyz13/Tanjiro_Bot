@@ -1,6 +1,6 @@
 {
-  "name": "SULA-MD",
-  "description": "SULA-MD Multidevice Whatsapp Bot",
+  "name": "TANJIRO-BOT",
+  "description": "TANJIRO-BOT Multidevice Whatsapp Bot",
   "logo": "https://i.ibb.co/0R73PZb5/SulaMd.jpg",
   "keywords": ["bot"],
   "success_url": "/",
@@ -30,8 +30,8 @@
 
      "buildpacks": [
         {
-            "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+            "url": "https://github.com/fedexyz13/Tanjiro_Bot.git"
         }
      ],
-  "stack": "heroku-24"
+  "stack": "TANJIRO-BOT"
 }
