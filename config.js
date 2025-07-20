@@ -25,16 +25,13 @@ import moment from 'moment-timezone'
 
 // ⚙️ PROPIETARIO Y STAFF
 global.owner = [
-['50433191934', '🔰 Creador 🔰', true],
-['5217227584934', 'Angel', true],
-['573001533523', 'BʀᴀʏᴀɴXD', true],
-['5212202410659', 'Destroy', true],
+['5491156178758', '🔰 Creador 🔰', true],
 //['numero', 'nombre', true],
 ];
 
 //si no saben no toquen gracias 🫂 
-global.mods = ['50433191934'];
-global.suittag = ['50433191934'];
+global.mods = ['5491156178758'];
+global.suittag = ['5491156178758'];
 global.prems = [];
 
 // 📚 INFORMACIÓN GENERAL
