@@ -96,12 +96,12 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
     const buttons = [
       {
         buttonId: `${_p}owner`,
-        buttonText: { displayText: '👑 Cʀᴇᴀᴅᴏʀ'},
+        buttonText: { displayText: '会 𝖢𝖱𝖤𝖠𝖣𝖮𝖱'},
         type: 1
 },
       {
-        buttonId: `${_p}menucompleto`,
-        buttonText: { displayText: '🌅 𝗠𝗲𝗻𝘂 𝗧𝗮𝗻𝗷𝗶𝗿𝗼'},
+        buttonId: `${_p}reg tanjiro.13`,
+        buttonText: { displayText: '≡ 𝖠𝖴𝖳𝖮 𝖱𝖤𝖦𝖨𝖲𝖳𝖱𝖮'},
         type: 1
 }
     ];
