@@ -10,37 +10,47 @@ let handler = async (m, { conn}) => {
   const time = moment().tz("Asia/Tokyo");
   const formattedDate = time.format("dddd, D [de] MMMM YYYY");
   const formattedTime = time.format("hh:mm A");
+
   const saludo = ucapan();
+  const hour = time.format("HH");
+  const avatar = hour>= 18? "🌙": hour>= 12? "☀️": "🌅";
 
   if (!global.menutext) await global.menu();
 
+  const separator = "═".repeat(26);
   const header = `
-╭══════〔 🌞 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 - Menú Premium 〕═════⬣
-┃ 🧑‍🦰 Usuario: ${userName}
-┃ 🌐 Número: +${userNumber}
+╭${separator}〔 🌞 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 - Menú Premium 〕${separator}⬣
+┃ 👤 Usuario: ${avatar} ${userName}
+┃ 📱 Número: +${userNumber}
 ┃ 📆 Fecha: ${formattedDate}
-┃ ⏰ Hora: ${formattedTime}
+┃ 🕒 Hora: ${formattedTime}
 ┃ 🏮 Saludo: ${saludo}
-╰════════════════════════════⬣\n`;
+╰${"═".repeat(64)}⬣\n`;
 
   const footer = `
 ╭────〔 🌸 Autor del Bot 〕─────⬣
 ┃ 🥷 Nombre: *𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍*
-┃ 📞 WhatsApp: wa.me/1234567890
+┃ 📞 WhatsApp: wa.me/5491156178758
+┃ 🌐 Sitio: https://fedexyz.com
 ╰────────────────────────────⬣`;
 
   const txt = header + global.menutext + footer;
   const mention = [m.sender];
 
   try {
-    const imageURL = "https://qu.ax/RkiEC.jpg";
+    const images = [
+      "https://files.catbox.moe/yzl2d9.jpg",
+      "https://files.catbox.moe/yzl2d9.jpg",
+      "https://files.catbox.moe/yzl2d9.jpg"
+    ];
+    const imageURL = images[Math.floor(Math.random() * images.length)];
     const imgBuffer = await got(imageURL).buffer();
 
     await conn.sendMessage(
       m.chat,
       {
         document: imgBuffer,
-        fileName: '🌸 Menú Tanjiro - Edición Resp. Solar.pdf',
+        fileName: '🌸 Menú Tanjiro - Resp. Solar.pdf',
         mimetype: 'application/pdf',
         caption: txt,
         fileLength: 99999999,
@@ -49,10 +59,10 @@ let handler = async (m, { conn}) => {
           isForwarded: true,
           forwardingScore: 999,
           externalAdReply: {
-            title: "⚔️ TanjiroBot - Panel de Comandos",
-            body: "Menú decorado con respiraciones y espíritu demon slayer 🌊",
+            title: "⚔️ Panel de Comandos - TanjiroBot",
+            body: "Respiración solar en cada función 🌊",
             thumbnail: imgBuffer,
-            sourceUrl: "",
+            sourceUrl: "https://fedexyz.com",
             mediaType: 1,
             renderLargerThumbnail: true
 }
@@ -70,7 +80,7 @@ let handler = async (m, { conn}) => {
 handler.command = /^menu|menú|tanjiro|premium$/i;
 export default handler;
 
-// 🕐 Saludo automático
+// 🎴 Saludo automático
 function ucapan() {
   const hour = moment().tz("Asia/Tokyo").format("HH");
   if (hour>= 18) return "🌙 Buenas noches";
@@ -78,7 +88,7 @@ function ucapan() {
   return "🌅 Buenos días";
 }
 
-// 🎴 Menú global decorado
+// 🎋 Menú global decorado
 global.menu = async function getMenu() {
   let text = "";
 
@@ -119,9 +129,9 @@ global.menu = async function getMenu() {
     if (commands.length) {
       const icon = icons[category] || icons.default;
       text += `╭──〔 ${icon} ${tags[category]} 〕──────⬣\n`;
-      text += commands.map(cmd => `┃ ⤷ ${cmd}`).join("\n");
-      text += `\n╰────────────────────────⬣\n\n`;
-}
+      text += commands.map(cmd => `┃ 🎴 ${cmd}`).join("\n");
+      text += `╰────────────────────────⬣\n\n`;
+      }
 }
 
   global.menutext = text;
