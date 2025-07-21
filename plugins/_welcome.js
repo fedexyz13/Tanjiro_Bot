@@ -1,98 +1,64 @@
-//© código creado por Deylin 
-//https://github.com/Deylin-eliac 
-//➤  no quites creditos 
-
-import { WAMessageStubType } from '@whiskeysockets/baileys'
+import { WAMessageStubType} from '@whiskeysockets/baileys'
 import fetch from 'node-fetch'
 
-async function obtenerPais(numero) {
-  try {
-    let number = numero.replace("@s.whatsapp.net", "");
-    const res = await fetch(`https://g-mini-ia.vercel.app/api/infonumero?numero=${number}`);
-    const data = await res.json();
+export async function before(m, { conn, participants, groupMetadata}) {
+  if (!m.messageStubType ||!m.isGroup) return true
 
-    if (data && data.pais) return data.pais;
-    if (data && data.bandera && data.nombre) return `${data.bandera} ${data.nombre}`;
-
-    return "🌐 Desconocido";
-  } catch (e) {
-    return "🌐 Desconocido";
-  }
-}
-
-export async function before(m, { conn, participants, groupMetadata }) {
-  if (!m.messageStubType || !m.isGroup) return;
-//  if (m.chat === "120363402481697721@g.us") return;
-
-  const who = m.messageStubParameters?.[0];
-  if (!who) return;
-
-  const taguser = `@${who.split("@")[0]}`;
-  const chat = global.db?.data?.chats?.[m.chat] || {};
-  const totalMembers = participants.length;
-  const date = new Date().toLocaleString("es-ES", { timeZone: "America/Mexico_City" });
-
-  const pais = await obtenerPais(who);
-  let ppUser = 'https://raw.githubusercontent.com/Deylin-Eliac/Pikachu-Bot/refs/heads/main/src/IMG-20250613-WA0194.jpg';
-
-  try {
-    ppUser = await conn.profilePictureUrl(who, 'image');
-  } catch (e) {}
-
-  const frasesBienvenida = [
-    "¡Pika Pika! Bienvenido al grupo.",
-    "¡Un rayo de energía ha llegado al grupo!",
-    "Pikachu dice que este grupo ahora es 100% más eléctrico ⚡",
-    "¡Esperamos que la pases genial, entrenador!",
-    "Bienvenido al equipo, ¡que empiece la aventura Pokémon!"
-  ];
-  const frasesDespedida = [
-    "Pikachu te dice adiós con una descarga de cariño.",
-    "Otro entrenador deja el grupo... ¡Buena suerte!",
-    "¡Hasta la próxima, no olvides tus Pokéballs!",
-    "El grupo se queda con menos voltaje ⚡",
-    "Pikachu te extrañará 🥺"
-  ];
-
-  const fraseRandomBienvenida = frasesBienvenida[Math.floor(Math.random() * frasesBienvenida.length)];
-  const fraseRandomDespedida = frasesDespedida[Math.floor(Math.random() * frasesDespedida.length)];
+  const who = m.messageStubParameters[0]
+  const taguser = `@${who.split('@')[0]}`
+  const chat = global.db.data.chats[m.chat]
+  const defaultImage = 'https://files.catbox.moe/sbzc3p.jpg'
 
   if (chat.welcome) {
+    let img
+    try {
+      const pp = await conn.profilePictureUrl(who, 'image')
+      img = await (await fetch(pp)).buffer()
+} catch {
+      img = await (await fetch(defaultImage)).buffer()
+}
+
     if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
       const bienvenida = `
-*⚡─『 𝑩𝑰𝑬𝑵𝑽𝑬𝑵𝑰𝑫𝑶/𝑨 』─🧃*
-👤 *Usuario:* ${taguser}
-🌍 *País:* ${pais}
-💬 *Grupo:* *${groupMetadata.subject}*
-👥 *Miembros:* *${totalMembers + 1}*
-📅 *Fecha:* *${date}*
-⚡ *Mensaje:* ${fraseRandomBienvenida}`.trim();
+🧣 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 | 𝖶𝖾𝗅𝖼𝗈𝗆𝖾
+
+🎋 Usuario: ${taguser}
+👥 Grupo: *${groupMetadata.subject}*
+
+“𝖫𝖺 𝖿𝗎𝖾𝗋𝗓𝖺 𝗇𝗈 𝗇𝖺𝖼𝖾 𝖽𝖾 𝗅𝖺 𝗋𝖺𝖻𝗂𝖺, 𝗌𝗂𝗇𝗈 𝖽𝖾 𝗅𝖺 𝖽𝖾𝗍𝖾𝗋𝗆𝗂𝗇𝖺𝖼𝗂𝗈𝗇.” — Tanjiro
+
+📘 Usa *#menu* para descubrir comandos.
+🥋 Que el Dojo te fortalezca.
+`.trim()
 
       await conn.sendMessage(m.chat, {
-        image: { url: ppUser },
+        image: img,
         caption: bienvenida,
         mentions: [who]
-      });
-    }
+})
 
-    if (
-      m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE ||
-      m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE
-    ) {
+} else if (
+      m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE ||
+      m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE
+) {
       const despedida = `
-*⚡──『 𝑫𝑬𝑺𝑷𝑬𝑫𝑰𝑫𝑨 』──🧃*
-👤 *Usuario:* ${taguser}
-🌍 *País:* ${pais}
-💬 *Grupo:* *${groupMetadata.subject}*
-👥 *Miembros:* *${totalMembers - 1}*
-📅 *Fecha:* *${date}*
-⚡ *Mensaje:* ${fraseRandomDespedida}`.trim();
+🧣 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 | 𝖦𝗈𝗈𝖽𝖻𝗒𝖾
+
+🍂 Usuario: ${taguser}
+👥 Grupo: *${groupMetadata.subject}*
+
+“𝖤𝗅 𝗋𝖾𝗌𝗉𝖾𝗍𝗈 𝗁𝖺𝖼𝖾 𝗊𝗎𝖾 𝗁𝗈𝗉𝗂𝗍𝖺𝗅 𝗌𝖾 𝗌𝗂𝗇𝗍𝖺 𝖼𝗈𝗆𝗈 𝗁𝗈𝗀𝖺𝗋.” — Tanjiro
+
+🌸 Te recordaremos con cariño.
+`.trim()
 
       await conn.sendMessage(m.chat, {
-        image: { url: ppUser },
+        image: img,
         caption: despedida,
         mentions: [who]
-      });
-    }
-  }
+})
+}
+}
+
+  return true
 }
