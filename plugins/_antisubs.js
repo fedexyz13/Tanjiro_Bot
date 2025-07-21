@@ -1,31 +1,30 @@
-import { areJidsSameUser } from '@whiskeysockets/baileys'
-export async function before(m, { participants, conn }) {
-    if (m.isGroup) {
-        let chat = global.db.data.chats[m.chat];
 
-         if (!chat.antiBot2) {
-            return
-        }
+import { areJidsSameUser} from '@whiskeysockets/baileys';
 
+export async function before(m, { participants, conn}) {
+  if (!m.isGroup) return;
 
-        let botJid = global.conn.user.jid // JID del bot principal
+  const chat = global.db.data.chats[m.chat];
+  if (!chat.antiBot2) return;
 
-       if (botJid === conn.user.jid) {
-           return
-        } else {
-           let isBotPresent = participants.some(p => areJidsSameUser(botJid, p.id))
+  const principalJid = global.conn.user.jid;
+  if (principalJid === conn.user.jid) return;
 
-          if (isBotPresent) {
-                setTimeout(async () => {
-                    await conn.reply(m.chat, `⚡──〔 🐭 *PIKACHU-BOT* ⚡ 〕──⚡
-¡Pika! ⚠️ Ya estoy en este grupo como *bot principal*.
+  const alreadyInGroup = participants.some(p => areJidsSameUser(principalJid, p.id));
+  if (alreadyInGroup) {
+    setTimeout(async () => {
+      const mensajeSalida = `
+〘🌸 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 - Detección espiritual 🌸〙
 
-Para evitar spam y confusión, me voy tranquilamente 🌩️
-¡Hasta luego, entrenador!
-─────────────────────────`, m, fake);
-                    await this.groupLeave(m.chat)
-                }, 5000)// 5 segundos
-            }
-        }
-    }
+⚠️ Ya estoy presente en este grupo como *𝖻𝗈𝗍 principal*.
+
+🧣 Para mantener la armonía y evitar confusión, me retiro con respeto.
+
+Respiración solar… corte limpio.
+`.trim();
+
+      await conn.reply(m.chat, mensajeSalida, m);
+      await this.groupLeave(m.chat);
+}, 5000);
+}
 }
