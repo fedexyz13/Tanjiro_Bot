@@ -63,7 +63,7 @@ const ddownr = {
 
 // Manejador principal
 const handler = async (m, { conn, text, command}) => {
-  await m.react("⚡️");
+  await m.react("🌙");
 
   if (!text.trim()) {
     return m.reply("🌸 Dime el nombre del video que deseas cazar.");
