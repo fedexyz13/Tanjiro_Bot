@@ -63,9 +63,6 @@ let handler = async (m, { conn, text}) => {
 ≡ ISRC: » ${track.external_ids?.isrc || "No disponible"}
 ≡ URL: » ${track.external_urls.spotify}
 
-# 🍃 Su audio se enviará en un momento...
-\`\`\`
-
 > 🧣 Dev: fedexyz
 `;
     await m.reply(cap);
