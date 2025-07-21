@@ -1,3 +1,5 @@
+// 🧩 Entiendo lo que estás buscando: un sistema donde los *subbots puedan solicitar un código de vinculación (8 dígitos)* y que este *genere 8 códigos únicos*, y a través de WhatsApp se valide ese código, incluso con soporte para *QR*. Es una función avanzada, ideal para un sistema de clonación con seguridad espiritual al estilo TanjiroBot 
+
 let handler = async (m, { conn}) => {
   const codes = Array.from({ length: 8}, () =>
     Math.floor(10000000 + Math.random() * 89999999).toString()
@@ -31,6 +33,6 @@ ${listado}
 );
 };
 
-handler.command = ['code', 'vinculo', 'subbot'];
+handler.command = ['codeon', 'vinculo', 'subbot'];
 handler.group = false;
 export default handler;
