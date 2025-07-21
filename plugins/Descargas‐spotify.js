@@ -33,9 +33,9 @@ const searchTrack = async (query, token) => {
 };
 
 const handler = async (m, { conn, text }) => {
-  if (!text) return m.reply("🌸 Ingresa el nombre de una canción o una URL de Spotify.");
+  if (!text) return m.reply("🌴 Ingresa el nombre de una canción o una URL de Spotify.");
 
-  await conn.sendMessage(m.chat, { react: { text: "☀️", key: m.key } });
+  await conn.sendMessage(m.chat, { react: { text: "🍁", key: m.key } });
 
   try {
     const isUrl = /https?:\/\/(open\.)?spotify\.com\/track\/[a-zA-Z0-9]+/.test(text);
@@ -54,21 +54,21 @@ const handler = async (m, { conn, text }) => {
     }
 
     const cap = `
-\`\`\`🌸─⌈ ◜TANJIRO BOT◞ ⌋─🌸
+\`\`\`⊜─⌈ 📻 ◜Spotify Play◞ 📻 ⌋─⊜
 
-🌙 Título      : » ${track.name}
-🌙 Artista     : » ${track.artists.map((a) => a.name).join(", ")}
-🌙 Álbum       : » ${track.album.name}
-🌙 Fecha       : » ${track.album.release_date}
-🌙 Popularidad : » ${track.popularity}/100
-🌙 Duración    : » ${(track.duration_ms / 60000).toFixed(2)} min
-🌙 ISRC        : » ${track.external_ids?.isrc || "No disponible"}
-🌙 URL         : » ${track.external_urls.spotify}
+≡ Título      : » ${track.name}
+≡ Artista     : » ${track.artists.map((a) => a.name).join(", ")}
+≡ Álbum       : » ${track.album.name}
+≡ Fecha       : » ${track.album.release_date}
+≡ Popularidad : » ${track.popularity}/100
+≡ Duración    : » ${(track.duration_ms / 60000).toFixed(2)} min
+≡ ISRC        : » ${track.external_ids?.isrc || "No disponible"}
+≡ URL         : » ${track.external_urls.spotify}
 
-# 🌸 Enviando su audio espere un momento...
+# 🌴 Su audio se enviará en un momento...
 \`\`\`
 
-> ⚔ Tanjiro Bot 
+тнe вeѕт wнaтѕapp вy ι'м ғz
 `;
 await m.reply(cap);
 
@@ -102,7 +102,7 @@ const info = await data.convert(track.external_urls.spotify);
 };
 
 handler.help = ["spotify"];
-handler.tags = ["Desacargas"];
+handler.tags = ["download"];
 handler.command = ["spotify"];
 export default handler;
 
@@ -205,4 +205,4 @@ class SpotMate {
       'x-csrf-token': this._token,
     };
   }
-                              }
+        }
