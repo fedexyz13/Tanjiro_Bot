@@ -26,7 +26,7 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isROwner, 
     }
 
     await conn.sendMessage(m.chat, {
-      text: `🌙 *「 TANJIROBO 」* 🌙\n\n🔗 *Detecté un enlace sospechoso en el grupo...*\n\n👤 Usuario: ${user}\n❌ *Reglas violadas*\n\n💥 Serás eliminado en unos segundos...\n`,
+      text: `🌙 *「 TANJIRO_BOT 」* 🌙\n\n🔗 *Detecté un enlace sospechoso en el grupo...*\n\n👤 Usuario: ${user}\n❌ *Reglas violadas*\n\n💥 Serás eliminado en unos segundos...\n`,
       mentions: [m.sender]
     }, { quoted: m, ephemeralExpiration: 24 * 60 * 100, disappearingMessagesInChat: 24 * 60 * 100 });
 
