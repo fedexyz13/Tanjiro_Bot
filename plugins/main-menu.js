@@ -20,7 +20,7 @@ let tags = {
 const defaultMenu = {
   before: `🧣︵˚˖𓆩⌇𓆪˖˚︵🌸︵˚˖𓆩⌇𓆪˖˚︵🧣
 ᯓ *𝖧𝗈𝗅𝖺 \`%name\` - Espíritu cazador* ⚔️
-ᯓ *𝗆𝖾𝗇𝗎 𝗍𝗋𝗎𝗇𝖼𝖺𝗅 𝖽𝖾 TanjiroBot (𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅)* 🌅
+ᯓ *𝗆𝖾𝗇𝗎 𝖽𝖾 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍* 🌅
 ᯓ *𝖢𝗋𝖾𝖺𝖽𝗈 𝗉𝗈𝗋 ꜰᴇᴅᴇ.xʏᴢ* 🗡️
 
 👤 Usuario: *%name*
