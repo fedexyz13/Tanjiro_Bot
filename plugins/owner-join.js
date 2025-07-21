@@ -1,40 +1,67 @@
-let linkRegex = /https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]{20,24})/i;
+const linkRegex = /https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]{20,24})/i;
 
-let handler = async (m, { conn, text, isOwner }) => {
-    if (!text) return m.reply(`${emojis} Debes enviar una invitación para que *${botname}* se una al grupo.`);
+let handler = async (m, { conn, text, isOwner}) => {
+  if (!text) {
+    return m.reply(`
+🌙 Tanjiro_Bot - Unirme al grupo 🌙
 
-    let match = text.match(linkRegex);
-    if (!match) return m.reply(`${emojis} Enlace de invitación no válido.`);
+Envía un *link válido* para que pueda entrar y protegerlo.
+`.trim());
+}
 
-    let [, code] = match;
+  let match = text.match(linkRegex);
+  if (!match) return m.reply(`⚠️ Link no válido, asegúrate de copiarlo bien.`);
 
-    if (isOwner) {
-        try {
-            let groupId = await conn.groupAcceptInvite(code);
-            m.reply(`${emojis} Me he unido exitosamente al grupo.`);
+  let [, code] = match;
 
+  if (isOwner) {
+    try {
+      let groupId = await conn.groupAcceptInvite(code);
+      await m.reply(`✅ TanjiroBot ahora es parte del grupo.`);
 
-            await conn.sendMessage(groupId, { text: '🚀 Llegó papá 😎' });
+      await conn.sendMessage(groupId, {
+        text: `🌙 Tanjiro_Bot llegó 🌙\n\n🧣 Estoy aquí para cuidar, ayudar y respirar con ustedes.`,
+        footer: 'Respira. Avanza. Protege.',
+        buttons: [
+          {
+            buttonId: '#menu',
+            buttonText: { displayText: '🌸 Ver comandos'},
+            type: 1,
+}
+        ],
+        headerType: 1
+});
 
-        } catch (err) {
-            console.error('[ERROR AL UNIRSE AL GRUPO]', err);
-            let msg = `${msm} Error al unirme al grupo.`;
+} catch (err) {
+      console.error('[ERROR AL UNIRSE]', err);
+      let msg = `❌ No pude entrar al grupo.\n`;
 
-            if (err?.message?.includes('not-authorized')) {
-                msg += `\nPosiblemente el número fue expulsado del grupo anteriormente.`;
-            } else if (err?.message?.includes('already joined')) {
-                msg += `\nYa estoy en ese grupo.`;
-            } else if (err?.message?.includes('invalid')) {
-                msg += `\nEl enlace de invitación no es válido o está vencido.`;
-            }
+      if (err?.message?.includes('not-authorized')) {
+        msg += `🔸 Me expulsaron antes.`;
+} else if (err?.message?.includes('already joined')) {
+        msg += `🔸 Ya estoy dentro.`;
+} else if (err?.message?.includes('invalid')) {
+        msg += `🔸 El enlace expiró o no sirve.`;
+}
 
-            m.reply(msg);
-        }
-    } else {
-        let message = `${emojis} Invitación a un grupo:\n${text}\n\nPor: @${m.sender.split('@')[0]}`;
-        await conn.sendMessage(`${suittag}@s.whatsapp.net`, { text: message, mentions: [m.sender] }, { quoted: m });
-        m.reply(`${emoji} El link del grupo ha sido enviado, gracias por tu invitación. ฅ^•ﻌ•^ฅ`);
-    }
+      m.reply(msg.trim());
+}
+
+} else {
+    let mensaje = `
+📨 Link recibido de grupo:
+${text}
+
+🧣 Enviado por: @${m.sender.split('@')[0]}
+`;
+
+    await conn.sendMessage(`${suittag}@s.whatsapp.net`, {
+      text: mensaje,
+      mentions: [m.sender]
+}, { quoted: m});
+
+    m.reply(`🌸 Gracias por la invitación, se ha enviado al cazador supremo.`);
+}
 };
 
 handler.help = ['invite'];
