@@ -1,13 +1,24 @@
-let handler = async (m, { conn, text }) => {
+let handler = async function (m, { conn }) {
+  let user = global.db.data.users[m.sender]
+  
+  if (!user.registered) {
+    return m.reply(`
+⚠️ *ERROR DE SISTEMA*
+🚫 No estás registrado actualmente.
+`)
+  }
 
-let user = global.db.data.users[m.sender]
-
-user.registered = false
-return conn.reply(m.chat, `${emojis} Tu registro fue borrado de mi base de datos.`, m, fake)
-
+  user.registered = false
+  m.reply(`
+🗡️ *USUARIO ELIMINADO*
+📁 Registro completamente eliminado del sistema...
+⌛ vuelve a registrarte con *.reg* si lo deseas.
+`)
 }
+
 handler.help = ['unreg']
 handler.tags = ['rg']
 handler.command = ['unreg']
 handler.register = true
+
 export default handler
