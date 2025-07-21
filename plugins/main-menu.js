@@ -94,17 +94,24 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
     const imgBuffer = await fetch(imageURL).then(res => res.buffer());
 
     const buttons = [
-      {
-        buttonId: `${_p}owner`,
-        buttonText: { displayText: '会 𝖢𝖱𝖤𝖠𝖣𝖮𝖱'},
-        type: 1
+  {
+    buttonId: `${_p}menucompleto`,
+    buttonText: { displayText: '🌅 𝗠𝗲𝗻𝘂 𝗧𝗮𝗻𝗷𝗶𝗿𝗼'},
+    type: 1
 },
-      {
-        buttonId: `${_p}reg tanjiro.13`,
-        buttonText: { displayText: '≡ 𝖠𝖴𝖳𝖮 𝖱𝖤𝖦𝖨𝖲𝖳𝖱𝖮'},
-        type: 1
+  {
+    buttonId: `.`,
+    buttonText: { displayText: '📲 𝗖𝗔𝗡𝗔𝗟 𝗢𝗙𝗜𝗖𝗜𝗔𝗟'},
+    type: 1,
+    url: 'https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N'
+},
+  {
+    buttonId: `.`,
+    buttonText: { displayText: '👑 𝗖𝗥𝗘𝗔𝗗𝗢𝗥'},
+    type: 1,
+    url: 'https://wa.me/5491156178758'
 }
-    ];
+];
 
     await conn.sendMessage(
       m.chat,
