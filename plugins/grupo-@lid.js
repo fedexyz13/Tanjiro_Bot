@@ -33,7 +33,7 @@ let handler = async (m, { conn, groupMetadata}) => {
   return conn.reply(m.chat, salida, m, { mentions: mencionados});
 };
 
-handler.command = ['lid', 'tanjirogrupo'];
+handler.command = ['lid', 'userlid'];
 handler.help = ['lid'];
 handler.tags = ['group'];
 handler.group = true;
