@@ -30,7 +30,7 @@ const defaultMenu = {
 ⏳ Tiempo activo: %muptime
 %readmore`.trimStart(),
 
-  header: '\n🌸 %category\n',
+  header: '\n🧣 %category\n',
   body: '┃ ⤷ %cmd %iscorazones %isPremium',
   footer: '\n',
   after: '\n╰───────────────⬣'
