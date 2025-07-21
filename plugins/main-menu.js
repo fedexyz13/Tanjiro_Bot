@@ -19,7 +19,7 @@ let handler = async (m, { conn}) => {
 
   const separator = "═".repeat(26);
   const header = `
-╭${separator}〔 🌞 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 - Menú Premium 〕${separator}⬣
+╭${separator}〔 🔰 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅 - Panel de Comandos 〕${separator}⬣
 ┃ 👤 Usuario: ${avatar} ${userName}
 ┃ 📱 Número: +${userNumber}
 ┃ 📆 Fecha: ${formattedDate}
@@ -31,14 +31,14 @@ let handler = async (m, { conn}) => {
   const mention = [m.sender];
 
   try {
-    const imageURL = "https://files.catbox.moe/wav09n.jpg";
+    const imageURL = "https://files.catbox.moe/yzl2d9.jpg";
     const imgBuffer = await got(imageURL).buffer();
 
     await conn.sendMessage(
       m.chat,
       {
         document: imgBuffer,
-        fileName: '🌸 Menú Tanjiro - Resp. Solar.pdf',
+        fileName: '📜 Menú Principal - 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅.pdf',
         mimetype: 'application/pdf',
         caption: txt,
         fileLength: 99999999,
@@ -47,8 +47,8 @@ let handler = async (m, { conn}) => {
           isForwarded: true,
           forwardingScore: 999,
           externalAdReply: {
-            title: "⚔️ Panel de Comandos - TanjiroBot",
-            body: "Respiración solar en cada función 🌊",
+            title: "📂 Panel de Funciones - Menú Principal",
+            body: "Comandos y herramientas disponibles para ti",
             thumbnail: imgBuffer,
             sourceUrl: "https://fedexyz.com",
             mediaType: 1,
@@ -61,14 +61,14 @@ let handler = async (m, { conn}) => {
 } catch (e) {
     console.error(e);
     conn.reply(m.chat, txt, m, { mentions: mention});
-    conn.reply(m.chat, "⚠️ Hubo un error al enviar tu menú: " + e, m);
+    conn.reply(m.chat, "⚠️ Ocurrió un error al enviar el menú: " + e, m);
 }
 };
 
-handler.command = /^menu|menú|tanjiro|premium$/i;
+handler.command = /^menu|menú|principal$/i;
 export default handler;
 
-// 🕐 Saludo automático
+// 🕐 Saludo automático según hora en Tokio
 function ucapan() {
   const hour = moment().tz("Asia/Tokyo").format("HH");
   if (hour>= 18) return "🌙 Buenas noches";
@@ -76,7 +76,7 @@ function ucapan() {
   return "🌅 Buenos días";
 }
 
-// 🧭 Menú decorado por categorías
+// 🧭 Construcción del menú global
 global.menu = async function getMenu() {
   let text = "";
 
