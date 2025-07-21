@@ -1,27 +1,36 @@
-let handler = async (m, { conn, participants}) => {
-  if (!m.isGroup) throw '🌪️ Esta técnica solo puede usarse en un grupo.';
-  if (!global.owner.includes(m.sender) &&!m.isAdmin) throw '⚠️ Solo un Pilar (admin) puede ejecutar la Ruleta Ban.';
+let handler = async (m, { conn}) => {
+  const codes = Array.from({ length: 8}, () =>
+    Math.floor(10000000 + Math.random() * 89999999).toString()
+);
 
-  // Filtra miembros válidos (no el bot ni el creador)
-  let miembros = participants
-.filter(p =>!p.admin &&!p.id.includes(conn.user.jid))
-.map(p => p.id);
+  global.tempSubbotCodes = global.tempSubbotCodes || {};
+  global.tempSubbotCodes[m.sender] = codes;
 
-  if (miembros.length < 1) throw '🌀 No hay miembros disponibles para sacrificar...';
+  let listado = codes.map((c, i) => `🔹 Código #${i + 1}: *${c}*`).join('\n');
+  let mensaje = `
+╭─〔 🎴 Panel de Vinculación 〕──⬣
+│ 🧑‍🚀 Solicitud: ${await conn.getName(m.sender)}
+│ 📦 Subbot Codes (8 dígitos cada uno):
+${listado}
+│
+│ 📲 Para verificar, envía uno de estos códigos.
+│ 📎 También puedes escanear el QR decorativo.
+╰────────────────────────⬣
+`;
 
-  let elegido = miembros[Math.floor(Math.random() * miembros.length)];
+  const qrURL = 'https://files.catbox.moe/yzl2d9.jpg'; // Imagen QR simbólica
+  const qrBuffer = await fetch(qrURL).then(res => res.buffer());
 
-  await conn.sendMessage(m.chat, {
-    text: `🎯 *Ruleta Ban invocada!* Tanjiro giró su katana y eligió a 👉 @${elegido.split('@')[0]}\n\n📤 Será eliminado sin misericordia.`,
-    mentions: [elegido]
-}, { quoted: m});
-
-  await conn.groupParticipantsUpdate(m.chat, [elegido], 'remove');
+  await conn.sendMessage(
+    m.chat,
+    {
+      image: qrBuffer,
+      caption: mensaje
+},
+    { quoted: m}
+);
 };
 
-handler.command = ['ruletaban'];
-handler.group = true;
-handler.admin = true;
-handler.botAdmin = true;
-
+handler.command = ['code', 'vinculo', 'subbot'];
+handler.group = false;
 export default handler;
