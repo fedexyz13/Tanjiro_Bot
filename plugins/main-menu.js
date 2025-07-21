@@ -46,22 +46,18 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
     const totalreg = Object.keys(global.db.data.users).length;
     const mode = global.opts["self"]? "Privado 🔒": "Público 🌐";
 
-    let help = Object.values(global.plugins)
-.filter(p =>!p.disabled)
-.map(p => ({
-        help: Array.isArray(p.help)? p.help: [p.help],
-        tags: Array.isArray(p.tags)? p.tags: [p.tags],
-        prefix: 'customPrefix' in p,
-        limit: p.limit,
-        premium: p.premium,
-        enabled:!p.disabled
+    const help = Object.values(global.plugins).filter(p =>!p.disabled).map(p => ({
+      help: Array.isArray(p.help)? p.help: [p.help],
+      tags: Array.isArray(p.tags)? p.tags: [p.tags],
+      prefix: 'customPrefix' in p,
+      limit: p.limit,
+      premium: p.premium,
+      enabled:!p.disabled
 }));
 
     for (const plugin of help) {
-      if (plugin.tags) {
-        for (const t of plugin.tags) {
-          if (!(t in tags) && t) tags[t] = textTanjiro(t);
-}
+      for (const tag of plugin.tags) {
+        if (!(tag in tags) && tag) tags[tag] = textTanjiro(tag);
 }
 }
 
@@ -74,14 +70,13 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
 .filter(menu => menu.tags.includes(tag))
 .map(menu =>
             menu.help.map(cmd => body.replace(/%cmd/g, menu.prefix? cmd: _p + cmd)).join('\n')
-)
-.join('\n');
+).join('\n');
         return `${header.replace(/%category/g, tags[tag])}${cmds}${footer}`;
 }),
       after
     ].join('\n');
 
-    let replace = {
+    const replace = {
       '%': '%',
       name,
       level,
@@ -98,6 +93,19 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
     const imageURL = 'https://files.catbox.moe/wav09n.jpg';
     const imgBuffer = await fetch(imageURL).then(res => res.buffer());
 
+    const buttons = [
+      {
+        buttonId: `${_p}owner`,
+        buttonText: { displayText: '👑 Cʀᴇᴀᴅᴏʀ'},
+        type: 1
+},
+      {
+        buttonId: `${_p}menucompleto`,
+        buttonText: { displayText: '🌅 𝗠𝗲𝗻𝘂 𝗧𝗮𝗻𝗷𝗶𝗿𝗼'},
+        type: 1
+}
+    ];
+
     await conn.sendMessage(
       m.chat,
       {
@@ -105,6 +113,7 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
         fileName: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍.pdf',
         mimetype: 'application/pdf',
         caption: text,
+        buttons,
         fileLength: 99999999,
         contextInfo: {
           mentionedJid: [m.sender],
