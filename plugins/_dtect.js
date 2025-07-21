@@ -1,105 +1,105 @@
-let WAMessageStubType = (await import('@whiskeysockets/baileys')).default
+import WAMessageStubType from '@whiskeysockets/baileys';
 
-export async function before(m, { conn, participants, groupMetadata }) {
-if (!m.messageStubType || !m.isGroup) return
-const fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net"}  
-let chat = global.db.data.chats[m.chat]
-let usuario = `@${m.sender.split`@`[0]}`
-let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || `${catalogo}` 
+export async function before(m, { conn, participants, groupMetadata}) {
+  if (!m.messageStubType ||!m.isGroup) return;
 
-let nombre, foto, edit, newlink, status, admingp, noadmingp
-
-nombre = `
-⚡️ *¡Cambio de nombre!*
-🐭 Entrenador: *${usuario}*
-✏️ Ha renombrado el grupo con su PokéPluma.
-
-📛 Nuevo nombre:
-*「 ${m.messageStubParameters[0]} 」*
-🔁 ¡Un nuevo capítulo comienza!
-`
-
-foto = `
-🖼️ *¡Cambio de imagen!*
-🐭 *${usuario}* ha lanzado un *Ataque Estilo* sobre:
-📍 *${groupMetadata.subject}*
-
-✨ ¡La imagen del grupo ha evolucionado!
-`
-
-edit = `
-🛠️ *¡Permisos actualizados!*
-🧑‍🏫 Entrenador: *${usuario}*
-
-⚙️ Configuración del grupo:
-${m.messageStubParameters[0] == 'on' 
-  ? '🔒 Solo *Entrenadores Élite* (admins) pueden modificar la configuración.'
-  : '🔓 *Todos los miembros* pueden usar el PokéMenú de configuración.'
+  const fkontak = {
+    key: {
+      participants: "0@s.whatsapp.net",
+      remoteJid: "status@broadcast",
+      fromMe: false,
+      id: "Tanjiro"
+},
+    message: {
+      contactMessage: {
+        vcard: `BEGIN:VCARD\nVERSION:3.0\nN:Tanjiro;Bot;;;\nFN:Respiración\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Katana\nEND:VCARD`
 }
-`
+},
+    participant: "0@s.whatsapp.net"
+};
 
-newlink = `
-🔗 *¡Nuevo enlace generado!*
-👨‍💼 Entrenador: *${usuario}*
-🌐 Ha utilizado *Corte* y restablecido el camino al gimnasio.
+  const chat = global.db.data.chats[m.chat];
+  const usuario = `@${m.sender.split`@`[0]}`;
+  const pp = await conn.profilePictureUrl(m.chat, 'image').catch(() => null) || 'https://i.imgur.com/S8DZf7o.jpeg';
 
-🚪 Nuevo acceso al grupo disponible.
-¡Atrapa la invitación si puedes!
-`
+  const nombre = `
+🌸 *¡Cambio de nombre detectado!*
+🧑‍🦰 Cazador: *${usuario}*
+🔖 Ha tallado un nuevo nombre en la piedra del grupo:
 
-status = `
-📢 *Estado del grupo actualizado*
+🌟 *「 ${m.messageStubParameters[0]} 」*
+📖 Un nuevo capítulo comienza en el viaje demon slayer.
+`;
 
-🔁 Acción realizada por: *${usuario}*
-🎮 Estado actual:
-${m.messageStubParameters[0] == 'on' 
-  ? '🔒 El grupo está *cerrado* — solo los Entrenadores Élite pueden hablar.'
-  : '🔓 El grupo está *abierto* — todos los entrenadores pueden participar.'
+  const foto = `
+🖼️ *¡Nuevo emblema grupal!*
+🧑‍🦰 Cazador: *${usuario}*
+🗡️ Ha impregnado su espíritu en la imagen del grupo *${groupMetadata.subject}*.
+
+💫 El aura ha cambiado... ¡como la respiración solar!
+`;
+
+  const edit = `
+🔧 *¡Permisos modificados!*
+⚙️ Cazador: *${usuario}*
+
+📜 Nuevas reglas del Dojo:
+${m.messageStubParameters[0] == 'on'
+? '⛩️ Solo los *Pilares (Admins)* pueden alterar el destino del grupo.'
+: '🌿 Todos los cazadores pueden intervenir y compartir su poder.'
 }
-🎤 ¡Que comiencen las batallas de palabras!
-`
+`;
 
-admingp = `
-🧢 *¡Subida de rango!*
-🎖️ *@${m.messageStubParameters[0].split`@`[0]}* ha evolucionado a *Entrenador Élite (Admin)*
+  const newlink = `
+🌐 *¡Nuevo portal abierto!*
+🧑‍🦰 Cazador: *${usuario}* ha usado *Respiración Corte de Viento* para restablecer el enlace.
 
-👑 Acción autorizada por: *${usuario}*
-⚡ ¡Que aproveche su nuevo poder con sabiduría!
-`
+🔗 ¡El camino hacia este grupo fue renovado!
+🌸 Prepárate para cruzar al siguiente nivel.
+`;
 
-noadmingp = `
-❌ *¡Cambio de rol!*
-😿 *@${m.messageStubParameters[0].split`@`[0]}* ha perdido su rango de *Entrenador Élite*
+  const status = `
+📣 *Estado del grupo cambiado*
+🔁 Por el cazador: *${usuario}*
+
+📍 Situación actual:
+${m.messageStubParameters[0] == 'on'
+? '🔒 El grupo está *cerrado* — solo los Pilares pueden hablar.'
+: '🔓 El grupo está *abierto* — que todos compartan su respiración.'
+}
+🗣️ ¡Que la conversación fluya como agua!
+`;
+
+  const admingp = `
+🎖️ *Ascenso confirmado*
+🔥 *@${m.messageStubParameters[0].split`@`[0]}* ha despertado su poder como *Pilar (Admin)*
+
+🤝 Otorgado por: *${usuario}*
+🌅 Que su espada se mueva con justicia y honor.
+`;
+
+  const noadmingp = `
+⚠️ *Descenso detectado*
+😿 *@${m.messageStubParameters[0].split`@`[0]}* ha sido liberado de su cargo de *Pilar*
 
 📉 Acción realizada por: *${usuario}*
-🍃 Volvió a su forma base.
-`
+🍃 El viaje continúa en otra forma.
+`;
 
-if (chat.detect && m.messageStubType == 21) {
-await conn.sendMessage(m.chat, { text: nombre, mentions: [m.sender] }, { quoted: fkontak })   
+  // Envío de mensajes según el tipo de evento
+  const stub = m.messageStubType;
+  const param = m.messageStubParameters?.[0];
 
-} else if (chat.detect && m.messageStubType == 22) {
-await conn.sendMessage(m.chat, { image: { url: pp }, caption: foto, mentions: [m.sender] }, { quoted: fkontak })
+  if (!chat.detect) return;
 
-} else if (chat.detect && m.messageStubType == 23) {
-await conn.sendMessage(m.chat, { text: newlink, mentions: [m.sender] }, { quoted: fkontak })    
+  if (stub === 21) return conn.sendMessage(m.chat, { text: nombre, mentions: [m.sender]}, { quoted: fkontak});
+  if (stub === 22) return conn.sendMessage(m.chat, { image: { url: pp}, caption: foto, mentions: [m.sender]}, { quoted: fkontak});
+  if (stub === 23) return conn.sendMessage(m.chat, { text: newlink, mentions: [m.sender]}, { quoted: fkontak});
+  if (stub === 25) return conn.sendMessage(m.chat, { text: edit, mentions: [m.sender]}, { quoted: fkontak});
+  if (stub === 26) return conn.sendMessage(m.chat, { text: status, mentions: [m.sender]}, { quoted: fkontak});
+  if (stub === 29) return conn.sendMessage(m.chat, { text: admingp, mentions: [m.sender, param]}, { quoted: fkontak});
+  if (stub === 30) return conn.sendMessage(m.chat, { text: noadmingp, mentions: [m.sender, param]}, { quoted: fkontak});
 
-} else if (chat.detect && m.messageStubType == 25) {
-await conn.sendMessage(m.chat, { text: edit, mentions: [m.sender] }, { quoted: fkontak })  
-
-} else if (chat.detect && m.messageStubType == 26) {
-await conn.sendMessage(m.chat, { text: status, mentions: [m.sender] }, { quoted: fkontak })  
-
-} else if (chat.detect && m.messageStubType == 29) {
-await conn.sendMessage(m.chat, { text: admingp, mentions: [`${m.sender}`,`${m.messageStubParameters[0]}`] }, { quoted: fkontak })  
-
-return;
-} if (chat.detect && m.messageStubType == 30) {
-await conn.sendMessage(m.chat, { text: noadmingp, mentions: [`${m.sender}`,`${m.messageStubParameters[0]}`] }, { quoted: fkontak })  
-
-} else {
-//console.log({ messageStubType: m.messageStubType,
-//messageStubParameters: m.messageStubParameters,
-//type: WAMessageStubType[m.messageStubType], 
-//})
-}}
+  // Si deseas registrar los tipos, puedes habilitar este log
+  // console.log({ messageStubType: stub, messageStubParameters: m.messageStubParameters})
+}
