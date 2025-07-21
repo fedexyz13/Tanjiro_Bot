@@ -2,7 +2,7 @@ import got from "got";
 import moment from "moment-timezone";
 
 let handler = async (m, { conn}) => {
-  m.react("🍃");
+  m.react("🌊");
 
   const senderId = m.sender;
   const userNumber = senderId.split("@")[0];
@@ -17,28 +17,28 @@ let handler = async (m, { conn}) => {
 
   if (!global.menutext) await global.menu();
 
-  const separator = "═".repeat(26);
+  const separator = "═".repeat(28);
   const header = `
-╭${separator}〔 🔰 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅 - Panel de Comandos 〕${separator}⬣
-┃ 👤 Usuario: ${avatar} ${userName}
-┃ 📱 Número: +${userNumber}
-┃ 📆 Fecha: ${formattedDate}
-┃ 🕒 Hora: ${formattedTime}
+╭${separator}〔 ⚔️ 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅 - Respiración Solar 〕${separator}⬣
+┃ 🧑‍🦰 Cazador: ${avatar} ${userName}
+┃ 📱 Katana ID: +${userNumber}
+┃ 📆 Calendario de batalla: ${formattedDate}
+┃ ⏰ Hora sagrada: ${formattedTime}
 ┃ 🏮 Saludo: ${saludo}
-╰${"═".repeat(64)}⬣\n`;
+╰${"═".repeat(66)}⬣\n`;
 
   const txt = header + global.menutext;
   const mention = [m.sender];
 
   try {
-    const imageURL = "https://files.catbox.moe/yzl2d9.jpg";
+    const imageURL = "https://files.catbox.moe/wav09n.jpg";
     const imgBuffer = await got(imageURL).buffer();
 
     await conn.sendMessage(
       m.chat,
       {
         document: imgBuffer,
-        fileName: '📜 Menú Principal - 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅.pdf',
+        fileName: '📜 Panel Demon Slayer - 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅.pdf',
         mimetype: 'application/pdf',
         caption: txt,
         fileLength: 99999999,
@@ -47,8 +47,8 @@ let handler = async (m, { conn}) => {
           isForwarded: true,
           forwardingScore: 999,
           externalAdReply: {
-            title: "📂 Panel de Funciones - Menú Principal",
-            body: "Comandos y herramientas disponibles para ti",
+            title: "🌸 Panel Solar - TanjiroBot",
+            body: "Invoca tus técnicas desde el libro de respiración",
             thumbnail: imgBuffer,
             sourceUrl: "https://fedexyz.com",
             mediaType: 1,
@@ -61,22 +61,22 @@ let handler = async (m, { conn}) => {
 } catch (e) {
     console.error(e);
     conn.reply(m.chat, txt, m, { mentions: mention});
-    conn.reply(m.chat, "⚠️ Ocurrió un error al enviar el menú: " + e, m);
+    conn.reply(m.chat, "⚠️ Error al invocar el pergamino sagrado: " + e, m);
 }
 };
 
 handler.command = /^menu|menú|principal$/i;
 export default handler;
 
-// 🕐 Saludo automático según hora en Tokio
+// 🎐 Saludo basado en hora japonesa
 function ucapan() {
   const hour = moment().tz("Asia/Tokyo").format("HH");
-  if (hour>= 18) return "🌙 Buenas noches";
-  if (hour>= 12) return "🌞 Buenas tardes";
-  return "🌅 Buenos días";
+  if (hour>= 18) return "🌙 Buenas noches, que la luna guíe tu katana";
+  if (hour>= 12) return "🌞 Buenas tardes, respira con fuerza";
+  return "🌅 Buenos días, el sol renace con tu espíritu";
 }
 
-// 🧭 Construcción del menú global
+// 📜 Construcción temática del menú
 global.menu = async function getMenu() {
   let text = "";
 
@@ -95,10 +95,10 @@ global.menu = async function getMenu() {
 }
 
   const icons = {
-    tools: "🛠",
-    fun: "🎲",
+    tools: "⚒️",
+    fun: "🎊",
     game: "🎮",
-    admin: "🛡",
+    admin: "🧢",
     sticker: "🎨",
     group: "👥",
     internet: "🌐",
@@ -116,8 +116,8 @@ global.menu = async function getMenu() {
 
     if (commands.length) {
       const icon = icons[category] || icons.default;
-      text += `╭──〔 ${icon} ${tags[category]} 〕──────⬣\n`;
-      text += commands.map(cmd => `┃ 🎴 ${cmd}`).join("\n");
+      text += `╭─〔 ${icon} ${tags[category]} 〕──⬣\n`;
+      text += commands.map(cmd => `┃ 🔹 ${cmd}`).join("\n");
       text += `╰────────────────────────⬣\n\n`;
 }
 }
