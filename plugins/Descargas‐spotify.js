@@ -205,4 +205,4 @@ class SpotMate {
       'x-csrf-token': this._token,
     };
   }
-}
+                              }
