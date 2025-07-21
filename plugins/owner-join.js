@@ -3,33 +3,29 @@ const linkRegex = /https:\/\/chat\.whatsapp\.com\/([0-9A-Za-z]{20,24})/i;
 let handler = async (m, { conn, text, isOwner}) => {
   if (!text) {
     return m.reply(`
-🌙 Tanjiro_Bot - Unirme al grupo 🌙
+〘🌸 TanjiroBot - Unión Grupal 🌸〙
 
-Envía un *link válido* para que pueda entrar y protegerlo.
+📜 Envía un *link válido* para que pueda entrar y proteger el grupo.
 `.trim());
 }
 
   let match = text.match(linkRegex);
-  if (!match) return m.reply(`⚠️ Link no válido, asegúrate de copiarlo bien.`);
+  if (!match) return m.reply(`⚠️ Link no válido, revisa que esté completo.`);
 
   let [, code] = match;
 
   if (isOwner) {
     try {
       let groupId = await conn.groupAcceptInvite(code);
-      await m.reply(`✅ TanjiroBot ahora es parte del grupo.`);
+      await m.reply(`✅ TanjiroBot se ha unido al grupo con éxito.`);
 
       await conn.sendMessage(groupId, {
-        text: `🌙 Tanjiro_Bot llegó 🌙\n\n🧣 Estoy aquí para cuidar, ayudar y respirar con ustedes.`,
-        footer: 'Respira. Avanza. Protege.',
-        buttons: [
-          {
-            buttonId: '#menu',
-            buttonText: { displayText: '🌸 Ver comandos'},
-            type: 1,
-}
-        ],
-        headerType: 1
+        text: `
+〘🌸 TanjiroBot llegó 🌸〙
+
+🧣 Gracias por invitarme.
+Usa *#Menú* para ver mis comandos disponibles.
+`.trim()
 });
 
 } catch (err) {
@@ -37,11 +33,11 @@ Envía un *link válido* para que pueda entrar y protegerlo.
       let msg = `❌ No pude entrar al grupo.\n`;
 
       if (err?.message?.includes('not-authorized')) {
-        msg += `🔸 Me expulsaron antes.`;
+        msg += `🔸 Fui expulsado antes.`;
 } else if (err?.message?.includes('already joined')) {
         msg += `🔸 Ya estoy dentro.`;
 } else if (err?.message?.includes('invalid')) {
-        msg += `🔸 El enlace expiró o no sirve.`;
+        msg += `🔸 El enlace está vencido o es inválido.`;
 }
 
       m.reply(msg.trim());
@@ -49,7 +45,7 @@ Envía un *link válido* para que pueda entrar y protegerlo.
 
 } else {
     let mensaje = `
-📨 Link recibido de grupo:
+📨 Enlace de grupo recibido:
 ${text}
 
 🧣 Enviado por: @${m.sender.split('@')[0]}
@@ -60,7 +56,7 @@ ${text}
       mentions: [m.sender]
 }, { quoted: m});
 
-    m.reply(`🌸 Gracias por la invitación, se ha enviado al cazador supremo.`);
+    m.reply(`🌸 Gracias por tu invitación. El cazador supremo lo ha recibido.`);
 }
 };
 
