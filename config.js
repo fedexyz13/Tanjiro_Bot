@@ -44,12 +44,12 @@ global.jadi = 'JadiBots';
 global.pikaJadibts = true;
 
 // ✨ DATOS DE ESTILO Y METADATOS
-global.packname = '🧃 Pikachu-Bot MD';
-global.botname = '⚡ Pikachu-Bot ⚡';
-global.wm = 'Pikachu-MD';
-global.dev = '© Desarrollado por Deylin';
-global.textbot = 'Pikachu-Bot • Potenciado por Deylin';
-global.etiqueta = 'Team Pikachu ⚡';
+global.packname = '乂 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 会';
+global.botname = '© 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖿𝖾𝖽𝖾𝗑𝗒𝗓 🧣';
+global.wm = '𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣';
+global.dev = '© 𝖯𝗈𝗐𝖾𝗋𝖾𝖽 𝖻𝗒 𝖿𝖾𝖽𝖾𝗑𝗒𝗓 🧣';
+global.textbot = '𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 𝖣𝖾𝗏𝖾𝗅𝗈𝗉𝖾𝖽 𝖡𝗒 𝖿𝖾𝖽𝖾𝗑𝗒𝗓 🧣';
+global.etiqueta = '𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 𝖬𝗎𝗅𝗍𝗂-𝖣𝖾𝗏𝗂𝖼𝖾 🧣';
 
 // 💰 MONEDA Y AVATARES
 global.moneda = 'pikas';
