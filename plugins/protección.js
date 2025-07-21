@@ -24,36 +24,3 @@ handler.admin = true;
 handler.register = true;
 
 export default handler;
-```
-
----
-
-*🛡️ Detector – Bloqueo de acceso según prefijo árabe*
-
-```js
-export async function before(m, { conn}) {
-  if (!m.isGroup) return;
-
-  const chat = global.db.data.chats[m.chat];
-  if (!chat.antiArabe) return;
-
-  const prefijosArabes = [
-    '+20', '+212', '+213', '+216', '+218',
-    '+971', '+966', '+973', '+974', '+968',
-    '+965', '+961', '+962', '+964', '+963',
-    '+970', '+972'
-  ];
-
-  const number = m.sender.split('@')[0];
-  const inicio = '+' + number.slice(0, number.length - 7); // aproximación al prefijo
-
-  if (prefijosArabes.some(p => number.startsWith(p))) {
-    await conn.reply(m.chat, `
-〘🚫 TanjiroBot - Bloqueo espiritual 🚫〙
-
-⚠️ El número *${number}* tiene un prefijo restringido.
-🧣 Activación automática por *antiArabe*.
-`, m);
-    await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
-}
-}
