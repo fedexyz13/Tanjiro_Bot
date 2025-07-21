@@ -102,7 +102,7 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
       m.chat,
       {
         document: imgBuffer,
-        fileName: '📜 Panel Demon Slayer - 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅.pdf',
+        fileName: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍.pdf',
         mimetype: 'application/pdf',
         caption: text,
         fileLength: 99999999,
@@ -111,10 +111,10 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
           isForwarded: true,
           forwardingScore: 999,
           externalAdReply: {
-            title: "🌸 Panel Solar - TanjiroBot",
+            title: "会 𝖯𝖺𝗇𝖾𝗅 𝗌𝗈𝗅𝖺𝗋 - 𝖳𝖺𝗇𝗃𝗂𝗋𝗈 𝖡𝗈𝗍",
             body: "Invoca tus técnicas desde el libro de respiración",
             thumbnail: imgBuffer,
-            sourceUrl: "https://fedexyz.com",
+            sourceUrl: "https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N",
             mediaType: 1,
             renderLargerThumbnail: true
 }
