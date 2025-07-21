@@ -1,52 +1,55 @@
-var handler = async (m, { conn, participants, usedPrefix, command, args }) => {
-    const pikachu = 'Ｏ(≧∇≦)Ｏ🧃';
-    const sadchu = 'Ｏ(≧∇≦)Ｏ🧃';
+var handler = async (m, { conn, participants, args}) => {
+  const emblema = '〘🌸 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 - 𝖤𝗑𝗉𝗎𝗅𝗌𝗂𝗈́𝗇 𝖢𝖺𝗓𝖺𝖽𝗈𝗋𝖾𝗌 🌸〙';
 
-    const groupInfo = await conn.groupMetadata(m.chat);
-    const ownerGroup = groupInfo.owner || m.chat.split`-`[0] + '@s.whatsapp.net';
-    const ownerBot = global.owner[0][0] + '@s.whatsapp.net';
+  const groupInfo = await conn.groupMetadata(m.chat);
+  const ownerGroup = groupInfo.owner || m.chat.split`-`[0] + '@s.whatsapp.net';
+  const ownerBot = global.owner[0][0] + '@s.whatsapp.net';
 
-    let usersToKick = m.mentionedJid || [];
+  let usersToKick = m.mentionedJid || [];
 
-    // Agrega citado si no está incluido
-    if (m.quoted && !usersToKick.includes(m.quoted.sender)) {
-        usersToKick.push(m.quoted.sender);
-    }
+  // Agregar citado si no está incluido
+  if (m.quoted &&!usersToKick.includes(m.quoted.sender)) {
+    usersToKick.push(m.quoted.sender);
+}
 
-    
-    const prefix = args[0]?.startsWith('+') ? args[0].replace(/\D/g, '') : null;
-    if (prefix) {
-        for (let user of participants) {
-            const number = user.id.split('@')[0];
-            if (number.startsWith(prefix) && !usersToKick.includes(user.id)) {
-                usersToKick.push(user.id);
-            }
-        }
-    }
+  // Detectar por prefijo (+54, +52...)
+  const prefix = args[0]?.startsWith('+')? args[0].replace(/\D/g, ''): null;
+  if (prefix) {
+    for (let user of participants) {
+      const number = user.id.split('@')[0];
+      if (number.startsWith(prefix) &&!usersToKick.includes(user.id)) {
+        usersToKick.push(user.id);
+}
+}
+}
 
-    if (!usersToKick.length) {
-        return conn.reply(m.chat, `${pikachu} ¡Pika Pika! Debes mencionar a alguien, responder un mensaje o usar un prefijo numérico para expulsar.`, m);
-    }
+  if (!usersToKick.length) {
+    return conn.reply(
+      m.chat,
+      `${emblema}\n\n🧣 Menciona a alguien, responde un mensaje o usa un prefijo como *+54* para expulsar.`,
+      m
+);
+}
 
-    let kicked = [];
-    let notAllowed = [];
+  let kicked = [];
+  let notAllowed = [];
 
-    for (let user of usersToKick) {
-        if (user === conn.user.jid) {
-            notAllowed.push('🤖 El bot no puede eliminarse a sí mismo.');
-            continue;
-        }
-        if (user === ownerGroup) {
-            notAllowed.push('👑 No se puede expulsar al dueño del grupo.');
-            continue;
-        }
-        if (user === ownerBot) {
-            notAllowed.push('🧑‍💻 No se puede expulsar al creador del bot.');
-            continue;
-        }
+  for (let user of usersToKick) {
+    if (user === conn.user.jid) {
+      notAllowed.push('🤖 No puedo cortarme a mí mismo.');
+      continue;
+}
+    if (user === ownerGroup) {
+      notAllowed.push('👑 No puedo expulsar al dueño del grupo.');
+      continue;
+}
+    if (user === ownerBot) {
+      notAllowed.push('🧑‍💻 El creador está bajo protección espiritual.');
+      continue;
+}
 
-        try {
-            await conn.groupParticipantsUpdate(m.chat, [user], 'remove');
+    try {
+      await conn.groupParticipantsUpdate(m.chat, [user], 'remove');
             kicked.push(user);
         } catch (e) {
             notAllowed.push(`⚠️ No se pudo expulsar a @${user.split('@')[0]}`);
