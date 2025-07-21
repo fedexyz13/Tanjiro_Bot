@@ -10,9 +10,9 @@ let handler = async (m, { conn}) => {
   const time = moment().tz("Asia/Tokyo");
   const formattedDate = time.format("dddd, D [de] MMMM YYYY");
   const formattedTime = time.format("hh:mm A");
+  const hour = time.format("HH");
 
   const saludo = ucapan();
-  const hour = time.format("HH");
   const avatar = hour>= 18? "🌙": hour>= 12? "☀️": "🌅";
 
   if (!global.menutext) await global.menu();
@@ -27,23 +27,11 @@ let handler = async (m, { conn}) => {
 ┃ 🏮 Saludo: ${saludo}
 ╰${"═".repeat(64)}⬣\n`;
 
-  const footer = `
-╭────〔 🌸 Autor del Bot 〕─────⬣
-┃ 🥷 Nombre: *𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍*
-┃ 📞 WhatsApp: wa.me/5491156178758
-┃ 🌐 Sitio: https://fedexyz.com
-╰────────────────────────────⬣`;
-
-  const txt = header + global.menutext + footer;
+  const txt = header + global.menutext;
   const mention = [m.sender];
 
   try {
-    const images = [
-      "https://files.catbox.moe/yzl2d9.jpg",
-      "https://files.catbox.moe/yzl2d9.jpg",
-      "https://files.catbox.moe/yzl2d9.jpg"
-    ];
-    const imageURL = images[Math.floor(Math.random() * images.length)];
+    const imageURL = "https://files.catbox.moe/wav09n.jpg";
     const imgBuffer = await got(imageURL).buffer();
 
     await conn.sendMessage(
@@ -80,7 +68,7 @@ let handler = async (m, { conn}) => {
 handler.command = /^menu|menú|tanjiro|premium$/i;
 export default handler;
 
-// 🎴 Saludo automático
+// 🕐 Saludo automático
 function ucapan() {
   const hour = moment().tz("Asia/Tokyo").format("HH");
   if (hour>= 18) return "🌙 Buenas noches";
@@ -88,7 +76,7 @@ function ucapan() {
   return "🌅 Buenos días";
 }
 
-// 🎋 Menú global decorado
+// 🧭 Menú decorado por categorías
 global.menu = async function getMenu() {
   let text = "";
 
@@ -131,7 +119,7 @@ global.menu = async function getMenu() {
       text += `╭──〔 ${icon} ${tags[category]} 〕──────⬣\n`;
       text += commands.map(cmd => `┃ 🎴 ${cmd}`).join("\n");
       text += `╰────────────────────────⬣\n\n`;
-      }
+}
 }
 
   global.menutext = text;
