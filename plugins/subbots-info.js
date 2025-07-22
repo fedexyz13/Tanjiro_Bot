@@ -74,7 +74,7 @@ case isCommand3:
 
   const message = users.map((v, i) => 
 ` ●──[ * Tanjiro_Bot Sub-Bot #${i + 1}* ]──●
- 🌙 Nombre : ${v.user.name || 'Pikachu'}
+ 🌙 Nombre : ${v.user.name || 'Tanjiro_Bot'}
  🔗 Enlace : wa.me/${v.user.jid.replace(/[^0-9]/g, '')}?text=${usedPrefix}owner 
  🔋 Online : ${v.uptime ? convertirMsADiasHorasMinutosSegundos(Date.now() - v.uptime) : 'Desconocido'}
  ●───────────────────────────`).join('\n\n');
