@@ -1,15 +1,15 @@
-import { fbdown} from 'ruhend-scraper'; // Asegúrate que esta función exista
+import { fbdown} from 'ruhend-scraper'; // Asegúrate que esté disponible
 
-const handler = async (m, { text, conn, args, usedPrefix, command}) => {
+const handler = async (m, { conn, args}) => {
   if (!args[0]) {
-    return conn.reply(m.chat, '*🚩 Ingresa el enlace del video de Facebook.*\n> De preferencia que sea público o tipo Reel.', m)
+    return conn.reply(m.chat, '*🚩 Ingresa el enlace de un video de Facebook.*\n> Asegúrate que sea público o un Reel.', m)
 }
 
   await m.react('🕒')
   let res
 
   try {
-    res = await fbdown(args[0]) // Asegúrate que la función fbdown sea válida
+    res = await fbdown(args[0]) // Usar función válida para Facebook
 } catch (error) {
     await m.react('❌')
     return conn.reply(m.chat, `🚩 *Error al obtener datos del enlace.*\n> Verifica que el link sea válido.\nDetalles: ${error.message}`, m)
@@ -20,19 +20,20 @@ const handler = async (m, { text, conn, args, usedPrefix, command}) => {
     return conn.reply(m.chat, '*🚩 No se encontraron resultados para ese enlace.*', m)
 }
 
+  // Selecciona la mejor resolución disponible
   let data = result.find(i => i.resolution === "720p (HD)") || result.find(i => i.resolution === "360p (SD)") || result[0]
   if (!data ||!data.url) {
     return conn.reply(m.chat, '*🚩 No se encontró una resolución compatible.*', m)
 }
 
-  await m.react('📡')
-  let video = data.url
+  const videoUrl = data.url
 
   try {
+    await m.react('📡')
+
     await conn.sendMessage(m.chat, {
-      video: { url: video},
+      video: { url: videoUrl}, // ENVÍA desde la URL directamente
       caption: '《★》 *Descargado con éxito desde Facebook ✓*',
-      fileName: 'fb.mp4',
       mimetype: 'video/mp4'
 }, { quoted: m})
 
@@ -41,11 +42,12 @@ const handler = async (m, { text, conn, args, usedPrefix, command}) => {
 } catch (error) {
     await m.react('❌')
 
-    let espacio = error.message.includes('ENOSPC')
-? '*❌ Error: El bot se quedó sin espacio de almacenamiento.*\n🧹 Libera memoria en el servidor o contenedor donde corre el bot.'
+    const espacioInsuficiente = error.message.includes('ENOSPC')
+    const mensaje = espacioInsuficiente
+? '*❌ Error: No hay espacio suficiente en el sistema donde se ejecuta el bot.*\n🧹 Libera almacenamiento en el servidor para seguir enviando contenido.'
 : `🚩 *Error al enviar el video.*\n> ${error.message}`
 
-    return conn.reply(m.chat, espacio, m)
+    return conn.reply(m.chat, mensaje, m)
 }
 }
 
