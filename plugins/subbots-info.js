@@ -1,4 +1,4 @@
-/*import { readdirSync, statSync, unlinkSync, existsSync, readFileSync, watch, rmSync, promises as fsPromises } from "fs";
+import { readdirSync, statSync, unlinkSync, existsSync, readFileSync, watch, rmSync, promises as fsPromises } from "fs";
 const fs = { ...fsPromises, existsSync };
 import path, { join } from 'path' 
 import ws from 'ws';
@@ -9,7 +9,7 @@ const isCommand2 = /^(stop|pausarai|pausarbot)$/i.test(command)
 const isCommand3 = /^(bots|sockets|socket)$/i.test(command)   
 
 async function reportError(e) {
-  await m.reply(`⚡Pikachu-Bot⚡: ¡ups! ocurrió un error inesperado 🐛`)
+  await m.reply(`🌙 Tanjiro_Bot : ¡ups! ocurrió un error inesperado 🐛`)
   console.log(e)
 }
 
@@ -21,7 +21,7 @@ case isCommand1:
 
   if (!await fs.existsSync(path)) {
     await conn.sendMessage(m.chat, { 
-      text: `⚡Pikachu-Bot⚡: no se detectó ninguna sesión activa 🔍\n\nUsa: *${usedPrefix + command}*\nO con ID:\n*${usedPrefix + command} (ID)*` 
+      text: `🌙 Tanjiro_Bot: no se detectó ninguna sesión activa 🔍\n\nUsa: *${usedPrefix + command}*\nO con ID:\n*${usedPrefix + command} (ID)*` 
     }, { quoted: m })
     return
   }
@@ -32,7 +32,7 @@ case isCommand1:
     }, { quoted: m }) 
   } else {
     await conn.sendMessage(m.chat, { 
-      text: `⚡Pikachu-Bot⚡: ¡sub-bot desconectado exitosamente! 💤` 
+      text: `🌙 Tanjiro_Bot: ¡sub-bot desconectado exitosamente! 💤` 
     }, { quoted: m })
   }
 
@@ -46,9 +46,9 @@ case isCommand1:
 
 case isCommand2:
   if (global.conn.user.jid == conn.user.jid) {
-    conn.reply(m.chat, `⚡Este comando solo puede usarlo un *sub-bot Pikachu*⚡`, m)
+    conn.reply(m.chat, `⚔ Este comando solo puede usarlo un *sub-bot Pikachu*⚡`, m)
   } else {
-    await conn.reply(m.chat, `⚡Pikachu-Bot⚡ se ha *desactivado temporalmente* ⚠️`, m)
+    await conn.reply(m.chat, `🌙 Tanjiro_Bot se ha *desactivado temporalmente* ⚠️`, m)
     conn.ws.close()
   }  
   break
@@ -73,13 +73,13 @@ case isCommand3:
   }
 
   const message = users.map((v, i) => 
-` ⚡────[ *Pikachu Sub-Bot #${i + 1}* ]────⚡
- 🧸 Nombre : ${v.user.name || 'Pikachu'}
+` ●──[ * Tanjiro_Bot Sub-Bot #${i + 1}* ]──●
+ 🌙 Nombre : ${v.user.name || 'Pikachu'}
  🔗 Enlace : wa.me/${v.user.jid.replace(/[^0-9]/g, '')}?text=${usedPrefix}owner 
  🔋 Online : ${v.uptime ? convertirMsADiasHorasMinutosSegundos(Date.now() - v.uptime) : 'Desconocido'}
- ⚡────────────────────────────`).join('\n\n');
+ ●───────────────────────────`).join('\n\n');
 
-  const responseMessage = `*⚡ PIKACHU-BOT ⚡*\n\n🐭 Sub-Bots conectados: *${users.length}*\n\n${message || '⚠️ No hay sub-bots conectados actualmente.'}`.trim();
+  const responseMessage = `*Tanjiro_Bot ⚔*\n\n🌙 Sub-Bots conectados: *${users.length}*\n\n${message || '⚠️ No hay sub-bots conectados actualmente.'}`.trim();
 
   await _envio.sendMessage(m.chat, {text: responseMessage, mentions: _envio.parseMention(responseMessage)}, {quoted: fkontak})
   break   
