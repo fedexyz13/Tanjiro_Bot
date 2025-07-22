@@ -1,8 +1,3 @@
-Pon esto en el menu, https://gofile.io/d/JPcPkW    pero que sea sin jpg el menú,
-
-
-
-
 import { xpRange} from '../lib/levelling.js'
 import fetch from 'node-fetch'
 
