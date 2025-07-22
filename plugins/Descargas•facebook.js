@@ -17,7 +17,6 @@ const handler = async (m, { args, conn}) => {
           body: dev || '',
           previewType: 0,
           thumbnail: icons || null,
-          sourceUrl: channel || ''
 }
 }
 })
