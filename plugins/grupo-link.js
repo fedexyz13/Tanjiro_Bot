@@ -1,22 +1,21 @@
-async function handler(m, { conn, orgs, participants, groupMetadata }) {
-  let group = m.chat;
-  let totalMembers = participants.length;
-  let link = 'https://chat.whatsapp.com/' + await conn.groupInviteCode(group);
-  conn.reply(m.chat, `*⚡🌩️──『 𝑳𝑰𝑵𝑲 𝑷𝑰𝑲𝑨𝑪𝑯𝑼 』──🌩️⚡*
+// 🌸 Tanjiro Link — Invocación breve y ceremonial
 
-📛 *Grupo:* ${groupMetadata.subject}
-👥 *Miembros:* ${totalMembers}
+async function handler(m, { conn, participants, groupMetadata}) {
+  const link = 'https://chat.whatsapp.com/' + await conn.groupInviteCode(m.chat)
+  const texto = `
+⛩️ *Santuario Nichirin: ${groupMetadata.subject}*
+👥 *Hashira reunidos:* ${participants.length}
+🔗 *Enlace espiritual:* ${link}
 
-🔗 *Enlace mágico:* 
-${link}
+🍃 *Tanjiro dice:* Respira, comparte, protege.`.trim()
 
-🐭 ¡Pikachu dice que lo compartas con los mejores entrenadores! ⚡`,  m, { detectLink: true });
+  conn.reply(m.chat, texto, m, { detectLink: true})
 }
 
-handler.help = ['link'];
-handler.tags = ['grupo'];
-handler.command = ['link', 'enlace'];
-handler.group = true;
-handler.botAdmin = true;
+handler.help = ['link']
+handler.tags = ['grupo']
+handler.command = ['link', 'linktanjiro']
+handler.group = true
+handler.botAdmin = true
 
-export default handler;
+export default handler
