@@ -102,8 +102,7 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
       m.chat,
       {
         document: imgBuffer,
-        fileName: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍.pdf',
-        fileName: '会 Dev_fedexyz.zip',
+        fileName: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍.zip',
         mimetype: 'application/pdf',
         caption: text,
         fileLength: 99999999,
@@ -141,4 +140,4 @@ function clockString(ms) {
   let m = isNaN(ms)? '--': Math.floor(ms / 60000) % 60;
   let s = isNaN(ms)? '--': Math.floor(ms / 1000) % 60;
   return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
-  }
+    }
