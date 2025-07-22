@@ -1,28 +1,27 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+let handler = async (m, { conn}) => {
+  let tanjiroCode =
+`⛩️🌸 *Respiración del Sol - Código de Sub-Bot (Tanjiro)* 🌸⛩️
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+🔐 *Código Nichirin Listo*
 
-let handler = async (m, { conn }) => {
-  try {
-    const mensajesPath = path.join(__dirname, '../src/database/motivacion.js')
-    const rawData = fs.readFileSync(mensajesPath, 'utf-8')
-    const data = JSON.parse(rawData)
-    const mensajes = data.mensajes
+🔥 *Canalizando energía respiratoria...* Vínculo activado por código espiritual...
 
-    const mensaje = mensajes[Math.floor(Math.random() * mensajes.length)]
-    await conn.reply(m.chat, `🌟 *Mensaje para ti:*\n\n"${mensaje}"`, m)
+🌊 Utilizá este *Código Demon Slayer* para convertirte en ✧ *Sub-Bot Temporal* con la nobleza del clan Kamado.
 
-  } catch (e) {
-    await conn.reply(m.chat, '⚠️ Ocurrió un error al leer los mensajes.', m)
-    console.error(e)
-  }
+📜 *Ritual Manual:*
+
+\`1\` » Pulsa los ⋮ puntos en la parte superior de WhatsApp
+\`2\` » Selecciona *Dispositivos Vinculados* — Portal del Cuervo Mensajero
+\`3\` » Tocá *Vincular con número de teléfono* — Técnica de conexión Nichirin
+\`4\` » Escribí el *Código Hashira* entregado por el cuervo maestro
+
+⚠️ *Tanjiro te recomienda usar una cuenta secundaria para esta misión*
+
+🌕 𝙎𝙄𝙎𝙏𝙀𝙈𝘼 ➤ [ CÓDIGO DISPONIBLE ] — *Respira profundo. Conectá. Protegé.* ⚔️`
+
+  await conn.sendMessage(m.chat, { text: tanjiroCode}, { quoted: m})
 }
-
-handler.command = ['motivacion', 'consejo', 'reflexion', 'superación']
-handler.tags = ['motivacional']
-handler.help = ['motivacion', 'reflexion']
-
+handler.help = ['code']
+handler.tags = ['serbot']
+handler.command = ['code']
 export default handler
