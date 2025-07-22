@@ -1,3 +1,8 @@
+Pon esto en el menu, https://gofile.io/d/JPcPkW    pero que sea sin jpg el menú,
+
+
+
+
 import { xpRange} from '../lib/levelling.js'
 import fetch from 'node-fetch'
 
@@ -30,7 +35,7 @@ const defaultMenu = {
 ⏳ Tiempo activo: %muptime
 %readmore`.trimStart(),
 
-  header: '\n🧣 %category\n',
+  header: '\n🌸 %category\n',
   body: '┃ ⤷ %cmd %iscorazones %isPremium',
   footer: '\n',
   after: '\n╰───────────────⬣'
@@ -103,6 +108,7 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
       {
         document: imgBuffer,
         fileName: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍.pdf',
+        fileName: '会 Dev_fedexyz.zip',
         mimetype: 'application/pdf',
         caption: text,
         fileLength: 99999999,
@@ -140,4 +146,4 @@ function clockString(ms) {
   let m = isNaN(ms)? '--': Math.floor(ms / 60000) % 60;
   let s = isNaN(ms)? '--': Math.floor(ms / 1000) % 60;
   return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
-                                 }
+  }
