@@ -1,56 +1,56 @@
-//Hola Deylin, lo Modifique un poco,
-//estaba re masiado lento.
-//Attm: Angel
-
-
 import axios from 'axios';
 
-const handler = async (m, { isOwner, isAdmin, conn, text, participants, args, command, usedPrefix }) => {
+const handler = async (m, { isOwner, isAdmin, conn, args, usedPrefix, participants}) => {
   if (usedPrefix.toLowerCase() === 'a') return;
 
-  const customEmoji = global.db?.data?.chats?.[m.chat]?.customEmoji || '🧃';
-  m.react(customEmoji);
+  const emote = global.db?.data?.chats?.[m.chat]?.customEmoji || '🍃';
+  await m.react(emote);
 
   if (!(isAdmin || isOwner)) {
     global.dfail('admin', m, conn);
     return;
-  }
+}
 
-  const mensaje = args.join` `;
-  const info = mensaje ? `╰➤ ✉️ *Mensaje:* ${mensaje}` : "╰➤ ⚠️ *Invocación general*";
+  const mensaje = args.join(' ');
+  const grupoNombre = await conn.getName(m.chat);
 
   let texto = `
-
-╭══ LLAMADO A TODOS ══⬣
-│  🧃 Total: ${participants.length}
-│  ⚡ Grupo: ${await conn.getName(m.chat)}
-${info}
-╰═══⬣\n`;
+⛩️ *Invocación Tanjiro — Respiración del Sol* ⛩️
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌀 *Grupo:* ${grupoNombre}
+👤 *Total de cazadores:* ${participants.length}
+📜 *Tanjiro dice:* ${mensaje || '“Nuestro vínculo es más fuerte que cualquier oscuridad.”'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
 
   for (const miembro of participants) {
-    const number = miembro.id.split('@')[0];
-    let flag = "🌐";
-    try {
-      const res = await axios.get(`https://g-mini-ia.vercel.app/api/infonumero?numero=${number}`);
-      flag = res.data.bandera || "🌐";
-    } catch (e) {
-      console.log(`❌ Error obteniendo bandera de ${number}:`, e);
-    }
-    texto += `┃ ${flag} @${number}\n`;
-  }
+    const numero = miembro.id.split('@')[0];
+    let bandera = '🌐';
 
-  texto += `╰══⬣\n✨ *Pikachu Bot* ⚔️`;
+    try {
+      const res = await axios.get(`https://g-mini-ia.vercel.app/api/infonumero?numero=${numero}`);
+      bandera = res.data.bandera || '🌐';
+} catch (e) {
+      console.log(`❌ Error obteniendo bandera para ${numero}:`, e.message);
+}
+
+    texto += `⚔️ ${bandera} @${numero}\n`;
+}
+
+  texto += `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌸 *Tanjiro Kamado:* Gracias por responder al llamado.
+🔥 *Respira. Pelea. Protége.*`;
 
   conn.sendMessage(m.chat, {
     text: texto.trim(),
-    mentions: participants.map(p => p.id)
-  }, { quoted: m });
+    mentions: participants.map(p => p.id),
+}, { quoted: m});
 };
 
 handler.help = ['todos <mensaje>'];
 handler.tags = ['grupo'];
 handler.command = ['tagall', 'todos'];
-handler.register = true
+handler.register = true;
 handler.admin = true;
 handler.group = true;
 
