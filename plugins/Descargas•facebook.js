@@ -1,51 +1,58 @@
-import { igdl } from 'ruhend-scraper';
+import { fbdown} from 'ruhend-scraper'; // Asegúrate que esta función exista
 
-const handler = async (m, { text, conn, args, usedPrefix, command }) => {
+const handler = async (m, { text, conn, args, usedPrefix, command}) => {
   if (!args[0]) {
-    return conn.reply(m.chat, '*\`Ingresa El link Del vídeo a descargar 🤍\`*\n> De Preferencia Que Sea Un Reel 🍭', m, fake);
-  }
+    return conn.reply(m.chat, '*🚩 Ingresa el enlace del video de Facebook.*\n> De preferencia que sea público o tipo Reel.', m)
+}
 
-  await m.react('🕒');
-  let res;
+  await m.react('🕒')
+  let res
+
   try {
-    res = await igdl(args[0]);
-  } catch (error) {
-    return conn.reply(m.chat, '*`Error al obtener datos. Verifica el enlace.`*', m);
-  }
+    res = await fbdown(args[0]) // Asegúrate que la función fbdown sea válida
+} catch (error) {
+    await m.react('❌')
+    return conn.reply(m.chat, `🚩 *Error al obtener datos del enlace.*\n> Verifica que el link sea válido.\nDetalles: ${error.message}`, m)
+}
 
-  let result = res.data;
+  let result = res?.data
   if (!result || result.length === 0) {
-    return conn.reply(m.chat, '*`No se encontraron resultados.`*', m);
-  }
+    return conn.reply(m.chat, '*🚩 No se encontraron resultados para ese enlace.*', m)
+}
 
-  let data;
-  try {
-    data = result.find(i => i.resolution === "720p (HD)") || result.find(i => i.resolution === "360p (SD)");
-  } catch (error) {
-    return conn.reply(m.chat, '*`Error al procesar los datos.`*', m);
-  }
+  let data = result.find(i => i.resolution === "720p (HD)") || result.find(i => i.resolution === "360p (SD)") || result[0]
+  if (!data ||!data.url) {
+    return conn.reply(m.chat, '*🚩 No se encontró una resolución compatible.*', m)
+}
 
-  if (!data) {
-    return conn.reply(m.chat, '*`No se encontró una resolución adecuada.`*', m);
-  }
-
-  await m.react('✅');
-  let video = data.url;
-// let api = await(await fetch(`https://delirius-apiofc.vercel.app/download/facebook?url=${args[0]}`)).json();
-
-// let vid = api.urls[0].hd|| api.urls[0].sd;
+  await m.react('📡')
+  let video = data.url
 
   try {
-    await conn.sendMessage(m.chat, { video: { url: video }, caption: '《★》 *Descargado Con Exito ✓*', fileName: 'fb.mp4', mimetype: 'video/mp4' }, { quoted: m });
-  } catch (error) {
-    return conn.reply(m.chat, `*Error al enviar el video.*\n> ${error.message}`, m);
-  await m.react('❌');
-  }
-};
+    await conn.sendMessage(m.chat, {
+      video: { url: video},
+      caption: '《★》 *Descargado con éxito desde Facebook ✓*',
+      fileName: 'fb.mp4',
+      mimetype: 'video/mp4'
+}, { quoted: m})
 
-handler.help = ['fb *<link>*'];
+    await m.react('✅')
+
+} catch (error) {
+    await m.react('❌')
+
+    let espacio = error.message.includes('ENOSPC')
+? '*❌ Error: El bot se quedó sin espacio de almacenamiento.*\n🧹 Libera memoria en el servidor o contenedor donde corre el bot.'
+: `🚩 *Error al enviar el video.*\n> ${error.message}`
+
+    return conn.reply(m.chat, espacio, m)
+}
+}
+
+handler.help = ['facebook', 'fb']
 handler.tags = ['descargas']
-handler.command = /^(fb|facebook|fbdl)$/i;
-handler.estrellas = 5;
+handler.command = /^(fb|facebook|fbdl)$/i
+handler.cookies = 1
+handler.register = true
 
-export default handler;                                                                                                                                                                                                                                          
+export default handler
