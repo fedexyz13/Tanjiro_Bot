@@ -1,55 +1,51 @@
-import fetch from 'node-fetch';
+import fetch from 'node-fetch'
 
-let handler = async(m, { conn, text, usedPrefix, command }) => {
+let handler = async (m, { conn, text, usedPrefix, command}) => {
+  if (!text) return m.reply(`🌙 Ingresa un texto para buscar en TikTok\n> *Ejemplo:* ${usedPrefix + command} Tanjiro Edits`)
 
-if (!text) return m.reply(`🌙 Ingrese Un Texto Para Buscarlo En Tiktok\n> *Ejemplo:* ${usedPrefix + command} Tanjiro Edits`);
+  try {
+    let api = `https://delirius-apiofc.vercel.app/search/tiktoksearch?query=${encodeURIComponent(text)}`
+    let response = await fetch(api)
+    let json = await response.json()
 
-try {
-let api = `https://delirius-apiofc.vercel.app/search/tiktoksearch?query=${text}`;
+    if (!json.meta || json.meta.length === 0) {
+      return m.reply('❌ No se encontraron resultados para tu búsqueda.')
+}
 
-let response = await fetch(api);
-let json = await response.json();
+    m.react('🔍')
 
-m.react('🕑');
-let txt = `🔎 \`TIKTOK - SEARCH\`.`;
-      for (let i = 0; i < (5 <= json.meta.length ? 5 : json.meta.length); i++) {
-    let meta = json.meta[i];
-    txt += `\n\n`;
-    txt += `✧ *Titulo:* ${meta.title}\n`
-    txt += `✧ *Likes:* ${meta.like}\n`
-    txt += `✧ *Comentarios:* ${meta.coment}\n`
-    txt += `✧ *Compartidas:* ${meta.share}\n`
-    txt += `✧ *Link:* ${meta.url}`;
-     }
+    // Limita a máximo 5 resultados
+    let resultados = json.meta.slice(0, 5)
 
-m.react('🕒');
-let metaa = json.meta[0];
-conn.sendMessage(m.chat, { 
-        text: txt, 
-        footer: dev, 
-        buttons: [
-            {
-                buttonId: `${usedPrefix}tiktok ${metaa.url}`,
-                buttonText: { displayText: 'Descargar Video' }
-            },
-            {
-                buttonId: `${usedPrefix}ttmp3 ${metaa.url}`,
-                buttonText: { displayText: 'Descargar Audio' }
-            }
-        ],
-        viewOnce: true,
-        headerType: 4
-    }, { quoted: m });
-m.react('✅');
+    for (let i = 0; i < resultados.length; i++) {
+      let meta = resultados[i]
 
+      let mensaje = `🎬 *Resultado #${i + 1}*\n\n` +
+        `📌 *Título:* ${meta.title}\n` +
+        `❤️ *Likes:* ${meta.like}\n` +
+        `💬 *Comentarios:* ${meta.coment}\n` +
+        `🔄 *Compartidas:* ${meta.share}\n` +
+        `🌐 *Enlace:* ${meta.url}`
+
+      // Envía texto con enlace primero
+      await conn.sendMessage(m.chat, { text: mensaje}, { quoted: m})
+
+      // Luego envía el video
+      await conn.sendMessage(m.chat, {
+        video: { url: meta.url},
+        caption: `📥 *TikTok Video #${i + 1}*`,
+}, { quoted: m})
+}
+
+    m.react('✅')
 } catch (e) {
-m.reply(`Error: ${e.message}`);
-m.react('✖️');
- }
-};
+    m.reply(`❎ Error: ${e.message}`)
+    m.react('✖️')
+}
+}
 
-handler.help = ['tiktoksearch'];
-handler.tag = ['buscador'];
-handler.command = ['tiktoksearch', 'ttsearch'];
+handler.help = ['tiktoksearch', 'tiktoks']
+handler.tags = ['buscador']
+handler.command = ['tiktoksearch', 'ttsearch']
 
-export default handler;
+export default handler
