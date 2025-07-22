@@ -103,7 +103,7 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
       {
         document: imgBuffer,
         fileName: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍.zip',
-        mimetype: 'application/css',
+        mimetype: 'application/zip',
         caption: text,
         fileLength: 99999999,
         contextInfo: {
