@@ -1,47 +1,60 @@
-import fetch from 'node-fetch'
-import axios from 'axios' // Asegúrate de tener Axios en tu bot
+import axios from 'axios'
+const {proto, generateWAMessageFromContent, prepareWAMessageMedia, generateWAMessageContent, getDevice} = (await import("@whiskeysockets/baileys")).default
 
-let handler = async (m, { conn, text, usedPrefix, command}) => {
-  if (!text) return m.reply(`🌙 Ingresa un texto para buscar en TikTok\n> *Ejemplo:* ${usedPrefix + command} Tanjiro Edits`)
-
-  try {
-    const api = `https://delirius-apiofc.vercel.app/search/tiktoksearch?query=${encodeURIComponent(text)}`
-    const res = await fetch(api)
-    const json = await res.json()
-
-    if (!json.meta || json.meta.length === 0) {
-      return m.reply('❌ No se encontraron resultados para tu búsqueda.')
+let handler = async (message, { conn, text, usedPrefix, command }) => {
+if (!text) return conn.reply(message.chat, `${emoji} Por favor, ingrese lo que desea buscar en tiktok.`, message)
+async function createVideoMessage(url) {
+const { videoMessage } = await generateWAMessageContent({ video: { url } }, { upload: conn.waUploadToServer })
+return videoMessage
 }
-
-    m.react('🔍')
-
-    const resultados = json.meta.slice(0, 5)
-
-    for (let i = 0; i < resultados.length; i++) {
-      const meta = resultados[i]
-      const caption = `🎬 *TikTok #${i + 1}*\n📝 *Título:* ${meta.title}\n❤️ *Likes:* ${meta.like}\n💬 *Comentarios:* ${meta.coment}\n🔄 *Compartidas:* ${meta.share}`
-
-      // Descarga el archivo MP4
-      const videoBuffer = await axios.get(meta.url, {
-        responseType: 'arraybuffer',
-})
-
-      await conn.sendMessage(m.chat, {
-        video: videoBuffer.data,
-        caption,
-        mimetype: 'video/mp4',
-}, { quoted: m})
-}
-
-    m.react('✅')
-} catch (e) {
-    m.reply(`❎ Error: No se pudo enviar los videos.\nDetalles: ${e.message}`)
-    m.react('⚠️')
+async function shuffleArray(array) {
+for (let i = array.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[array[i], array[j]] = [array[j], array[i]]
 }
 }
+try {
+await message.react(rwait)
+conn.reply(message.chat, `${emoji2} Descargando Su Video, espere un momento...`, message)
+let results = []
+let { data: response } = await axios.get('https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=' + text)
+let searchResults = response.data
+shuffleArray(searchResults)
+let selectedResults = searchResults.splice(0, 7)
+for (let result of selectedResults) {
+results.push({
+body: proto.Message.InteractiveMessage.Body.fromObject({ text: null }),
+footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: dev }),
+header: proto.Message.InteractiveMessage.Header.fromObject({
+title: '' + result.title,
+hasMediaAttachment: true,
+videoMessage: await createVideoMessage(result.nowm)
+}),
+nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({ buttons: [] })})}
+const responseMessage = generateWAMessageFromContent(message.chat, {
+viewOnceMessage: {
+message: {
+messageContextInfo: {
+deviceListMetadata: {},
+deviceListMetadataVersion: 2
+},
+interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+body: proto.Message.InteractiveMessage.Body.create({ text: `${emoji} Resultado de: ` + text }),
+footer: proto.Message.InteractiveMessage.Footer.create({ text: '★ Tanjiro - Tiktoks ★' }),
+header: proto.Message.InteractiveMessage.Header.create({ hasMediaAttachment: false }),
+carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({ cards: [...results] })})}}
+}, { quoted: message })
+await message.react(done)
+await conn.relayMessage(message.chat, responseMessage.message, { messageId: responseMessage.key.id })
+} catch (error) {
+await conn.reply(message.chat, error.toString(), message)
+}}
 
-handler.help = ['tiktoksearch']
+handler.help = ['tiktoksearch <txt>']
 handler.tags = ['buscador']
-handler.command = ['tiktoksearch', 'ttsearch']
+handler.command = ['tiktoksearch', 'ttss', 'tiktoks']
+handler.group = true
+handler.register = true
+handler.coin = 2
 
 export default handler
