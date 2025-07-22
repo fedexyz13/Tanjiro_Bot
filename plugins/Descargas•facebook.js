@@ -1,42 +1,53 @@
-import { igdl } from 'ruhend-scraper'
+import { fbdown} from 'ruhend-scraper' // Asegúrate que fbdown esté exportado
 
-const handler = async (m, { text, conn, args, usedPrefix, command }) => {
-if (!args[0]) {
-return conn.reply(m.chat, '🚩 Ingresa Un Link De Facebook', m, rcanal)}
-let res
-try {
-await m.react(rwait)
-conn.reply(m.chat, `🕒 *Descargando su video de facebook.*`, m, {
-contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
-title: packname,
-body: dev,
-previewType: 0, 
-thumbnail: icons,
-sourceUrl: channel }}})
-res = await igdl(args[0])
-} catch {
-await m.react(error)
-return conn.reply(m.chat, '🚩 Error al obtener datos. Verifica el enlace.', m, fake)}
-let result = res.data
-if (!result || result.length === 0) {
-return conn.reply(m.chat, '🚩 No se encontraron resultados.', m, fake)}
-let data
-try {
-await m.react(rwait)
-data = result.find(i => i.resolution === "720p (HD)") || result.find(i => i.resolution === "360p (SD)")
-} catch {
-await m.react(error)
-return conn.reply(m.chat, '🚩 Error al procesar los datos.', m, rcanal)}
-if (!data) {
-return conn.reply(m.chat, '🚩 No se encontró una resolución adecuada.', m, rcanal)}
-let video = data.url
-try {
-await m.react(rwait)
-await conn.sendMessage(m.chat, { video: { url: video }, caption: '🚩 *Video de Facebook*\n' + textbot, fileName: 'fb.mp4', mimetype: 'video/mp4' }, { quoted: m })
-await m.react(done)
-} catch {
-await m.react(error)
-return conn.reply(m.chat, '🚩 Error al enviar el video.', m, rcanal)}}
+const handler = async (m, { args, conn}) => {
+  if (!args[0]) {
+    return conn.reply(m.chat, '🚩 Ingresa un link de Facebook.', m)
+}
+
+  try {
+    await m.react(rwait)
+    conn.reply(m.chat, `🕒 *Procesando video de Facebook...*`, m, {
+      contextInfo: {
+        externalAdReply: {
+          mediaUrl: args[0],
+          mediaType: 1,
+          showAdAttribution: true,
+          title: packname || 'Facebook Downloader',
+          body: dev || '',
+          previewType: 0,
+          thumbnail: icons || null,
+          sourceUrl: channel || ''
+}
+}
+})
+
+    const res = await fbdown(args[0])
+    const result = res.data
+
+    if (!result || result.length === 0) {
+      throw new Error('No se encontraron resultados.')
+}
+
+    const data = result.find(i => i.resolution === "720p (HD)") || result[0]
+    if (!data ||!data.url) {
+      throw new Error('No se encontró una resolución adecuada.')
+}
+
+    await conn.sendMessage(m.chat, {
+      video: { url: data.url},
+      caption: '📥 *Video de Facebook Descargado*',
+      fileName: 'fb.mp4',
+      mimetype: 'video/mp4'
+}, { quoted: m})
+
+    await m.react('✅')
+
+} catch (e) {
+    await m.react('⚠️')
+    conn.reply(m.chat, `🚩 Error al obtener video:\n${e.message}`, m)
+}
+}
 
 handler.help = ['facebook', 'fb']
 handler.tags = ['descargas']
