@@ -10,9 +10,7 @@ async function sendAlbumMessage(jid, medias, options = {}) {
     throw new RangeError('Minimum of 2 media items required');
 }
 
-  for (const media of medias) {
-    const { type, data} = media;
-
+  for (const { type, data} of medias) {
     if (!['image', 'video'].includes(type)) {
       throw new TypeError(`Unsupported media.type: ${type}`);
 }
@@ -54,17 +52,17 @@ async function sendAlbumMessage(jid, medias, options = {}) {
 
   for (let i = 0; i < medias.length; i++) {
     const { type, data} = medias[i];
-    const message = await baileys.generateWAMessage(
+    const msg = await baileys.generateWAMessage(
       jid,
       { [type]: data,...(i === 0? { caption}: {})},
       { upload: conn.waUploadToServer}
 );
 
-    message.message.messageContextInfo = {
+    msg.message.messageContextInfo = {
       messageAssociation: { associationType: 1, parentMessageKey: album.key},
 };
 
-    await conn.relayMessage(jid, message.message, { messageId: message.key.id});
+    await conn.relayMessage(jid, msg.message, { messageId: msg.key.id});
     await baileys.delay(delay);
 }
 
@@ -74,14 +72,14 @@ async function sendAlbumMessage(jid, medias, options = {}) {
 async function fetchPins(query) {
   try {
     const { data} = await axios.get(`https://anime-xi-wheat.vercel.app/api/pinterest?q=${encodeURIComponent(query)}`);
-    return Array.isArray(data.images)
-? data.images.map(url => ({
-          type: 'image',
-          data: { url},
-}))
-: [];
-} catch (err) {
-    console.error('Pinterest fetch error:', err);
+    if (!Array.isArray(data.images)) return [];
+
+    return data.images.map(url => ({
+      type: 'image',
+      data: { url},
+}));
+} catch (error) {
+    console.error('Pinterest fetch error:', error);
     return [];
 }
 }
@@ -93,23 +91,22 @@ const handler = async (m, { conn, text}) => {
 
   try {
     m.react('🕒');
-    const results = await fetchPins(text);
 
+    const results = await fetchPins(text);
     if (!results.length) {
-      return conn.reply(m.chat, `No se encontraron resultados para "${text}".`, m, rcanal);
+      return conn.reply(m.chat, `🧣 No se encontraron resultados para "${text}".`, m, rcanal);
 }
 
     const selectedMedia = results.slice(0, 15);
 
     await sendAlbumMessage(m.chat, selectedMedia, {
-      caption: `Resultados de: ${text}\nCantidad de Resultados: ${selectedMedia.length}\n🌸 Creador: ${dev}`,
+      caption: `Resultados de: ${text} 🧣\nCantidad de Resultados: ${selectedMedia.length}`,
       quoted: m,
 });
 
     await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key}});
-
-} catch (err) {
-    conn.reply(m.chat, 'Error al obtener imágenes de Pinterest.', m, rcanal);
+} catch (error) {
+    conn.reply(m.chat, 'Error al obtener imágenes de Pinterest. 🧣', m, rcanal);
 }
 };
 
