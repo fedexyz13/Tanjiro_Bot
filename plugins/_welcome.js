@@ -9,7 +9,7 @@ export async function before(m, { conn}) {
   for (const user of participants) {
     const name = await conn.getName(user);
     const pp = await conn.profilePictureUrl(user, 'image').catch(() =>
-      'https://files.cloudkuimages.guru/images/Y7PT6XwM.jpg'
+      'https://files.catbox.moe/wav09n.jpg'
 );
     const tag = '@' + user.split('@')[0];
 
