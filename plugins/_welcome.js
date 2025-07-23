@@ -40,8 +40,8 @@ Por favor, lee las reglas y respira en armonía.
         mentions: [user],
         contextInfo: {
           externalAdReply: {
-            title: `Miembro salió del grupo`,
-            body: `${name} se fue ❌`,
+            title: 🧣 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣`,
+            body: `${name} 🧣`,
             thumbnailUrl: pp,
             mediaType: 1,
             renderLargerThumbnail: true,
