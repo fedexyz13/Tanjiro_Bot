@@ -40,7 +40,7 @@ Por favor, lee las reglas y respira en armonía.
         mentions: [user],
         contextInfo: {
           externalAdReply: {
-            title: 🧣 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣`,
+            title: '🧣 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣`,
             body: `${name} 🧣`,
             thumbnailUrl: pp,
             mediaType: 1,
