@@ -46,7 +46,7 @@ case isCommand1:
 
 case isCommand2:
   if (global.conn.user.jid == conn.user.jid) {
-    conn.reply(m.chat, `⚔ Este comando solo puede usarlo un *sub-bot Pikachu*⚡`, m)
+    conn.reply(m.chat, `⚔ Este comando solo puede usarlo un *sub-bot Tanjiro*🌙`, m)
   } else {
     await conn.reply(m.chat, `🌙 Tanjiro_Bot se ha *desactivado temporalmente* ⚠️`, m)
     conn.ws.close()
