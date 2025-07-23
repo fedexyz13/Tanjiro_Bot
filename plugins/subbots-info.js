@@ -28,7 +28,7 @@ case isCommand1:
 
   if (global.conn.user.jid !== conn.user.jid) {
     return conn.sendMessage(m.chat, {
-      text: `⚡Este comando solo se puede usar desde el *Pikachu-Bot principal* ⚡\n\nLink: https://wa.me/${global.conn.user.jid.split`@`[0]}?text=${usedPrefix + command}`
+      text: `⚡Este comando solo se puede usar desde el *Tanjiro-Bot principal* ⚡\n\nLink: https://wa.me/${global.conn.user.jid.split`@`[0]}?text=${usedPrefix + command}`
     }, { quoted: m }) 
   } else {
     await conn.sendMessage(m.chat, { 
