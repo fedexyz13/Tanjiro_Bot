@@ -2,31 +2,27 @@ import moment from 'moment-timezone';
 
 const handler = async (m, { text, command, conn}) => {
   const user = m.sender;
-  const args = text.trim().split(/ +/);
+  const args = text.trim().split('.');
   const nombre = args[0];
   const edad = args[1];
   const fecha = moment().tz('America/Guatemala').format('DD/MM/YYYY');
 
-  if (!nombre ||!edad) {
+  if (!nombre ||!edad || isNaN(edad)) {
     return conn.reply(m.chat, `
 🌄 *Registro de Respiración - Tanjiro_Bot_MD* ⚔️
 
-🧭 Para canalizar tu energía correctamente, necesitas presentarte ante el maestro.
+🧭 Tu energía no ha sido canalizada correctamente.
 
-📖 *Registro Rápido de Cazador:*
-╭─「⚔️」
-│ 🌀 Activación del sello espiritual
-│ 💠 Acceso básico a técnicas del dojo
-╰────────────
+📖 *Formato correcto:*
+📝 *${command} tuNombre.edad*
+📌 Ejemplo: *${command} Tanjiro.14*
 
-📝 Usa: *#reg nombre.edad*
-
-📜 *El registro es un pacto temporal. No lo ignores.*
+📜 *El registro es un pacto temporal con el dojo. No lo ignores.*
 `, m);
 }
 
-  // Registrar usuario en base de datos
-  const data = global.db.data.users[user] || {}
+  // Registro limpio y seguro en base de datos del cazador
+  if (!global.db.data.users[user] || {}
   data.registered = true
   data.name = nombre
   data.age = edad
