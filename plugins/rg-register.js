@@ -1,70 +1,57 @@
-import { createHash} from 'crypto'
+import moment from 'moment-timezone';
 
-const grupoNotificacion = '120363422310535661@g.us'
+const handler = async (m, { text, command, conn}) => {
+  const user = m.sender;
+  const args = text.trim().split(/ +/);
+  const nombre = args[0];
+  const edad = args[1];
+  const fecha = moment().tz('America/Guatemala').format('DD/MM/YYYY');
 
-function generarID(sender) {
-  return createHash('md5').update(sender).digest('hex')
+  if (!nombre ||!edad) {
+    return conn.reply(m.chat, `
+🌄 *Registro de Respiración - Tanjiro_Bot_MD* ⚔️
+
+🧭 Para canalizar tu energía correctamente, necesitas presentarte ante el maestro.
+
+📖 *Registro Rápido de Cazador:*
+╭─「⚔️」
+│ 🌀 Activación del sello espiritual
+│ 💠 Acceso básico a técnicas del dojo
+╰────────────
+
+📝 Usa: *#reg nombre.edad*
+
+📜 *El registro es un pacto temporal. No lo ignores.*
+`, m);
 }
 
-let handler = async (m, { conn, text, usedPrefix, command}) => {
-  let user = global.db.data.users[m.sender]
-  if (user.registered) return m.reply(`🌸 Ya estás registrado.\nUsa *${usedPrefix}unreg* para reiniciar.`)
+  // Registrar usuario en base de datos
+  const data = global.db.data.users[user] || {}
+  data.registered = true
+  data.name = nombre
+  data.age = edad
+  data.premium = true
+  data.regTime = Date.now()
 
-  let match = /\|?(.*)([.|] *?)([0-9]*)$/i
-  let [_, name, __, age] = text.match(match) || []
+  // Enviar mensaje de confirmación tipo "ver canal"
+  const mensaje = `✅ *REGISTRO EXITOSO, MAESTRO*\n\n👤 *Nombre:* ${nombre}\n🎂 *Edad:* ${edad} años\n📆 *Registrado el:* ${fecha}\n\n🎖️ *Ya puedes usar los comandos premium.*`
 
-  if (!name ||!age) return m.reply(`🌸 Formato inválido.\nEjemplo: *${usedPrefix + command} Tanjiro.16*`)
-  age = parseInt(age)
-  if (isNaN(age) || age < 5 || age> 100) return m.reply('🌸 Ingresa una edad válida (5-100 años).')
-
-  user.name = name.trim()
-  user.age = age
-  user.regTime = Date.now()
-  user.registered = true
-  user.exp += 300
-
-  const sn = generarID(m.sender)
-
-  const mensaje = `
-🌸 *Registro exitoso en TanjiroBot* 🌸
-
-🗂️ Nombre: ${user.name}
-🎂 Edad: ${user.age}
-🧣 ID de Cazador: ${sn}
-
-Usa *#perfil* para ver tu progreso.
-`.trim()
-
-  await m.react('✅')
-
-  await conn.sendMessage(m.chat, {
-    text: mensaje,
+  return conn.reply(m.chat, mensaje, m, {
     contextInfo: {
       externalAdReply: {
-        title: '🌸 TanjiroBot | Registro exitoso',
-        body: 'Bienvenido al Dojo del Sol',
-        thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
-        sourceUrl: 'https://chat.whatsapp.com/KiaWNR6YqUp3KeXoeMP7qO',
+        title: '✅ Registro Completado',
+        body: 'Ahora puedes usar todos los comandos',
         mediaType: 1,
-        renderLargerThumbnail: true
-}
-}
-}, { quoted: m})
-
-  const noti = `
-🌀 Registro nuevo en TanjiroBot
-
-👤 Usuario: ${m.pushName}
-🆔 Número: ${m.sender}
-🧣 Nombre: ${user.name}
-🎂 Edad: ${user.age}
-🗂 ID: ${sn}
-`
-
-  await conn.sendMessage(grupoNotificacion, { text: noti})
+        thumbnailUrl: 'https://files.catbox.moe/mr8c64.jpg',
+        renderLargerThumbnail: true,
+        sourceUrl: 'https://whatsapp.com/channel/0029VbAfd7zDDmFXm5adcF31'
+      }
+    }
+  })
 }
 
-handler.help = ['reg']
-handler.tags = ['rg']
-handler.command = ['register', 'reg', 'registrar']
+handler.command = ['verificar', 'reg'];
+handler.help = ['verificar', 'reg']
+handler.tags = ['main']
+handler.register = false
 export default handler
