@@ -34,8 +34,8 @@ const handler = async (m, { conn, args }) => {
     }
 };
 
-handler.command = ['imgg', 'pikaia', 'generarimg', 'genera'];
-handler.help = ['imgg <texto>', 'pikaia', 'generarimg', 'genera'];
+handler.command = ['imgg', 'Tanjiroia', 'generarimg', 'genera'];
+handler.help = ['imgg <texto>', 'Tanjiroia', 'generarimg', 'genera'];
 handler.tags = ['ia'];
 handler.register = true
 
