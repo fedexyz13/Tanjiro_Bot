@@ -1,7 +1,7 @@
 var handler = async (m, { conn, command, text }) => {
   if (!text) return conn.reply(
     m.chat,
-    `⚡️💛 *¡Pika-Pika! Necesito dos nombres para calcular el amor electrizante...*\n\nEjemplo: *#${command} Ash Misty*`,
+    `☀️ *¡Tanjiro_Bot Necesito dos nombres para calcular el amor electrizante...*\n\nEjemplo: *#${command} tanjiro*`,
     m
   );
 
@@ -10,13 +10,13 @@ var handler = async (m, { conn, command, text }) => {
 
   if (!nombre2) return conn.reply(
     m.chat,
-    `💫 *Ups... falta el segundo nombre, entrenador.*\n\nUsa así: *#${command} Pikachu Eevee*`,
+    `💫 *Falta el segundo nombre, entrenador.*\n\nUsa así: *#${command} Tanjiro Eevee*`,
     m
   );
 
   let porcentaje = Math.floor(Math.random() * 101); 
   let frases = [
-  `⚡️💛 *${nombre1}* y *${nombre2}* tienen un *${porcentaje}%* de compatibilidad. ¡Pika-amor! 💖`,
+  `⚡️💛 *${nombre1}* y *${nombre2}* tienen un *${porcentaje}%* de compatibilidad. ¡Tanjiro! 💖`,
   `🌩️ *${nombre1}* siente chispas por *${nombre2}* con un *${porcentaje}%* de electricidad romántica. ✨`,
   `💘 Según el radar de amor Pokémon, *${nombre1}* y *${nombre2}* tienen un *${porcentaje}%* de conexión 💞`,
   `⚡ *Pikachu detecta una energía del *${porcentaje}%* entre *${nombre1}* y *${nombre2}*. ¡Eso puede evolucionar! 🥰`,
