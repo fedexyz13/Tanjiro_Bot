@@ -1,119 +1,116 @@
-
 import axios from 'axios';
 import baileys from '@whiskeysockets/baileys';
 
 async function sendAlbumMessage(jid, medias, options = {}) {
-  if (typeof jid !== "string") {
-    throw new TypeError(`jid must be string, received: ${jid} (${jid?.constructor?.name})`);
-  }
+  if (typeof jid!== 'string') {
+    throw new TypeError(`jid must be a string, received: ${jid} (${jid?.constructor?.name})`);
+}
+
+  if (!Array.isArray(medias) || medias.length < 2) {
+    throw new RangeError('Minimum of 2 media items required');
+}
 
   for (const media of medias) {
-    if (!media.type || (media.type !== "image" && media.type !== "video")) {
-      throw new TypeError(`media.type must be "image" or "video", received: ${media.type} (${media.type?.constructor?.name})`);
-    }
-    if (!media.data || (!media.data.url && !Buffer.isBuffer(media.data))) {
-      throw new TypeError(`media.data must be object with url or buffer, received: ${media.data} (${media.data?.constructor?.name})`);
-    }
-  }
+    const { type, data} = media;
 
-  if (medias.length < 2) {
-    throw new RangeError("Minimum 2 media");
-  }
+    if (!['image', 'video'].includes(type)) {
+      throw new TypeError(`Unsupported media.type: ${type}`);
+}
 
-  const caption = options.text || options.caption || "";
-  const delay = !isNaN(options.delay) ? options.delay : 500;
-  delete options.text;
-  delete options.caption;
-  delete options.delay;
+    if (!data || (!data.url &&!Buffer.isBuffer(data))) {
+      throw new TypeError(`Invalid media.data: ${JSON.stringify(data)}`);
+}
+}
+
+  const {
+    caption = '',
+    quoted,
+    delay = 500,
+...restOptions
+} = options;
 
   const album = baileys.generateWAMessageFromContent(
     jid,
     {
       messageContextInfo: {},
       albumMessage: {
-        expectedImageCount: medias.filter(media => media.type === "image").length,
-        expectedVideoCount: medias.filter(media => media.type === "video").length,
-        ...(options.quoted
-          ? {
-              contextInfo: {
-                remoteJid: options.quoted.key.remoteJid,
-                fromMe: options.quoted.key.fromMe,
-                stanzaId: options.quoted.key.id,
-                participant: options.quoted.key.participant || options.quoted.key.remoteJid,
-                quotedMessage: options.quoted.message,
-              },
-            }
-          : {}),
-      },
-    },
+        expectedImageCount: medias.filter(m => m.type === 'image').length,
+        expectedVideoCount: medias.filter(m => m.type === 'video').length,
+...(quoted && {
+          contextInfo: {
+            remoteJid: quoted.key.remoteJid,
+            fromMe: quoted.key.fromMe,
+            stanzaId: quoted.key.id,
+            participant: quoted.key.participant || quoted.key.remoteJid,
+            quotedMessage: quoted.message,
+},
+}),
+},
+},
     {}
-  );
+);
 
-  await conn.relayMessage(album.key.remoteJid, album.message, { messageId: album.key.id });
+  await conn.relayMessage(jid, album.message, { messageId: album.key.id});
 
   for (let i = 0; i < medias.length; i++) {
-    const { type, data } = medias[i];
-    const img = await baileys.generateWAMessage(
-      album.key.remoteJid,
-      { [type]: data, ...(i === 0 ? { caption } : {}) },
-      { upload: conn.waUploadToServer }
-    );
-    img.message.messageContextInfo = {
-      messageAssociation: { associationType: 1, parentMessageKey: album.key },
-    };
-    await conn.relayMessage(img.key.remoteJid, img.message, { messageId: img.key.id });
+    const { type, data} = medias[i];
+    const message = await baileys.generateWAMessage(
+      jid,
+      { [type]: data,...(i === 0? { caption}: {})},
+      { upload: conn.waUploadToServer}
+);
+
+    message.message.messageContextInfo = {
+      messageAssociation: { associationType: 1, parentMessageKey: album.key},
+};
+
+    await conn.relayMessage(jid, message.message, { messageId: message.key.id});
     await baileys.delay(delay);
-  }
+}
 
   return album;
 }
 
-const pins = async (judul) => {
+async function fetchPins(query) {
   try {
-    const res = await axios.get(`https://anime-xi-wheat.vercel.app/api/pinterest?q=${encodeURIComponent(judul)}`);
-    if (Array.isArray(res.data.images)) {
-      return res.data.images.map(url => ({
-        image_large_url: url,
-        image_medium_url: url,
-        image_small_url: url
-      }));
-    }
+    const { data} = await axios.get(`https://anime-xi-wheat.vercel.app/api/pinterest?q=${encodeURIComponent(query)}`);
+    return Array.isArray(data.images)
+? data.images.map(url => ({
+          type: 'image',
+          data: { url},
+}))
+: [];
+} catch (err) {
+    console.error('Pinterest fetch error:', err);
     return [];
-  } catch (error) {
-    console.error('Error:', error);
-    return [];
-  }
-};
+}
+}
 
-let handler = async (m, { conn, text }) => {
-  if (!text) return conn.reply(m.chat, `${emojis} Ingresa un texto. Ejemplo: .pinterest ${botname}`, m, rcanal);
-  
+const handler = async (m, { conn, text}) => {
+  if (!text) {
+    return conn.reply(m.chat, `${emojis} Ingresa un texto. Ejemplo:.pinterest ${botname}`, m, rcanal);
+}
 
   try {
     m.react('🕒');
-    const results = await pins(text);
-    if (!results || results.length === 0) return conn.reply(m.chat, `No se encontraron resultados para "${text}".`, m, rcanal);
+    const results = await fetchPins(text);
 
-    const maxImages = Math.min(results.length, 15);
-    const medias = [];
+    if (!results.length) {
+      return conn.reply(m.chat, `No se encontraron resultados para "${text}".`, m, rcanal);
+}
 
-    for (let i = 0; i < maxImages; i++) {
-      medias.push({
-        type: 'image',
-        data: { url: results[i].image_large_url || results[i].image_medium_url || results[i].image_small_url }
-      });
-    }
+    const selectedMedia = results.slice(0, 15);
 
-    await sendAlbumMessage(m.chat, medias, {
-      caption: `Resultados de: ${text}\nCantidad de Resultados: 15\n🌸 creador: ${dev}`,
-      quoted: m
-    });
+    await sendAlbumMessage(m.chat, selectedMedia, {
+      caption: `Resultados de: ${text}\nCantidad de Resultados: ${selectedMedia.length}\n🌸 Creador: ${dev}`,
+      quoted: m,
+});
 
-    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key}});
 
-  } catch (error) {
+} catch (err) {
     conn.reply(m.chat, 'Error al obtener imágenes de Pinterest.', m, rcanal);
-  }
+}
 };
 
 handler.help = ['pinterest', 'pin'];
