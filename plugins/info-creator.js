@@ -1,22 +1,24 @@
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn}) => {
-  let contacto = '+5491156178758';
-  let nombreEmpresarial = 'fedexyz Tanjiro_Bot';
+  let contacto = '+5491156178758'; // Número del maestro creador
+  let nombreDojo = 'Tanjiro_Bot_MD | Creador Oficial';
+
   let mensaje = `
-📇 *Contacto Empresarial: ${nombreEmpresarial}*
+🌄 *Contacto del Creador de Tanjiro_Bot_MD* ⚔️
 
-Hola 👋, este es el número oficial, Si deseas unír el bot a tu grupo manda mensaje al creador.
+📜 Bienvenido, joven cazador.
+Si deseas integrar Tanjiro_Bot_MD a tu grupo, hablar con el maestro o colaborar con el Dojo del Sol, este es el contacto oficial.
 
-💬 Puedes escribir directamente a:
-📞 *${contacto}*
-🌐 Enlace directo: https://wa.me/${contacto.replace('+', '')}
+👤 *Nombre del dojo:* ${nombreDojo}
+📞 *Número directo:* ${contacto}
+🔗 Enlace: https://wa.me/${contacto.replace('+', '')}
 
-🎩 Solo mánda mensaje si es algo importante...
-`;
+📝 Manda mensaje solo si es digno de atención.
+`.trim();
 
   try {
-    const res = await fetch("https://files.catbox.moe/44qt5t.jpg");
+    const res = await fetch("https://files.catbox.moe/wav09n.jpg"); // Imagen estilo Tanjiro
     const buffer = await res.buffer();
 
     await conn.sendMessage(m.chat, {
@@ -26,17 +28,17 @@ Hola 👋, este es el número oficial, Si deseas unír el bot a tu grupo manda m
         mentionedJid: [m.sender],
         forwardingScore: 999,
         isForwarded: true,
-        businessMessageForwardedFrom: 'WhatsApp Business Oficial'
+        businessMessageForwardedFrom: 'TanjiroBot_MD Creador Oficial'
 }
 }, { quoted: m});
+
 } catch (e) {
-    console.error('[❌] Error al enviar contacto empresarial:', e);
-    m.reply('🚫 No se pudo mostrar la información de contacto en este momento.');
+    console.error('[❌] Error al enviar contacto del dojo:', e);
+    m.reply('🚫 El maestro está meditando. Intenta más tarde.');
 }
 };
 
-handler.help = ['owner', 'creador', 'business'];
+handler.command = ['creador', 'creator', 'contacto'];
+handler.help = ['creador'];
 handler.tags = ['main'];
-handler.command = ['owner', 'creator', 'creador', 'business', 'empresa'];
-
 export default handler;
