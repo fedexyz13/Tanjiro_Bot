@@ -2,8 +2,8 @@ import axios from "axios";
 import cheerio from "cheerio";
 
 const channelRD = {
-  id: "120363402097425674@newsletter",
-  name: "Canal Oficial del Dojo del Sol 🌄",
+  id: '120363402097425674@newsletter',
+  name: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣'
 };
 
 const client_id = "acc6302297e040aeb6e4ac1fbdfd62c3";
@@ -32,23 +32,18 @@ const searchTrack = async (query, token) => {
       headers: { Authorization: `Bearer ${token}`},
 }
 );
-  if (res.data.tracks.items.length === 0)
-    throw new Error("🎶 Canción no encontrada.");
+  if (res.data.tracks.items.length === 0) throw new Error("🎶 Canción no encontrada.");
   return res.data.tracks.items[0];
 };
 
 let handler = async (m, { conn, text}) => {
-  if (!text)
-    return m.reply(
-      "🌴 Ingresa el nombre de una canción o el enlace directo de Spotify."
-);
-
+  if (!text) return m.reply("🍁 Ingresa el nombre de una canción o un enlace de Spotify.");
   await m.react("🍁");
 
   try {
-    const isUrl =
-      /https?:\/\/(open\.)?spotify\.com\/track\/[a-zA-Z0-9]+/.test(text);
+    const isUrl = /https?:\/\/(open\.)?spotify\.com\/track\/[a-zA-Z0-9]+/.test(text);
     let track;
+
     const token = await getToken();
 
     if (isUrl) {
@@ -73,50 +68,43 @@ let handler = async (m, { conn, text}) => {
 │ 🆔 *ISRC:* ${track.external_ids?.isrc || "No disponible"}
 │ 🔗 *Spotify:* ${track.external_urls.spotify}
 │
-╰─🧣 *Dev; fedexyz*
+╰─🧣 *Dev:* fedexyz
 `;
-
     await m.reply(cap);
 
     const data = new SpotMate();
     const info = await data.convert(track.external_urls.spotify);
 
-    await conn.sendMessage(
-      m.chat,
-      {
-        audio: { url: info.url},
-        mimetype: "audio/mpeg",
-        ptt: false,
-        contextInfo: {
-          mentionedJid: [m.sender],
-          forwardingScore: 999,
-          isForwarded: true,
-          forwardedNewsletterMessageInfo: {
-            newsletterJid: channelRD.id,
-            serverMessageId: 120,
-            newsletterName: channelRD.name,
+    await conn.sendMessage(m.chat, {
+      audio: { url: info.url},
+      mimetype: "audio/mpeg",
+      ptt: false,
+      contextInfo: {
+        mentionedJid: [m.sender],
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: channelRD.id,
+          serverMessageId: 120,
+          newsletterName: channelRD.name,
 },
-          externalAdReply: {
-            title: track.name,
-            body: `Artista: ${track.artists.map((a) => a.name).join(", ")}`,
-            thumbnailUrl: track.album.images[0]?.url,
-            mediaType: 1,
-            sourceUrl: track.external_urls.spotify,
-            renderLargerThumbnail: true,
+        externalAdReply: {
+          title: track.name,
+          body: `Artista: ${track.artists.map((a) => a.name).join(", ")}`,
+          thumbnailUrl: track.album.images[0]?.url,
+          mediaType: 1,
+          sourceUrl: track.external_urls.spotify,
+          renderLargerThumbnail: true,
 },
 },
-},
-      { quoted: m}
-);
+}, { quoted: m});
 
     await m.react("🌸");
+
 } catch (err) {
     console.error(err);
     await m.react("❌");
-    m.reply(
-      "🎶 No se pudo obtener la canción. Intenta nuevamente más tarde:\n> " +
-        err.message
-);
+    m.reply("🎶 No se pudo obtener la canción. Intenta nuevamente más tarde:\n> " + err.message);
 }
 };
 
@@ -125,6 +113,7 @@ handler.tags = ["download"];
 handler.command = ["spotify"];
 export default handler;
 
+// 🌀 Clase para convertir a audio
 class SpotMate {
   constructor() {
     this._cookie = null;
@@ -133,23 +122,20 @@ class SpotMate {
 
   async _visit() {
     try {
-      const response = await axios.get("https://spotmate.online/en", {
+      const response = await axios.get('https://spotmate.online/en', {
         headers: {
-          "user-agent":
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36",
+          'user-agent': 'Mozilla/5.0 (Linux; Android 10)',
 },
 });
 
-      const setCookieHeader = response.headers["set-cookie"];
+      const setCookieHeader = response.headers['set-cookie'];
       if (setCookieHeader) {
-        this._cookie = setCookieHeader
-.map((cookie) => cookie.split(";")[0])
-.join("; ");
+        this._cookie = setCookieHeader.map(c => c.split(';')[0]).join('; ');
 }
 
       const $ = cheerio.load(response.data);
-      this._token = $('meta[name="csrf-token"]').attr("content");
-      if (!this._token) throw new Error("Token CSRF no encontrado.");
+      this._token = $('meta[name="csrf-token"]').attr('content');
+      if (!this._token) throw new Error('Token CSRF no encontrado.');
 } catch (error) {
       throw new Error(`🌐 Error al visitar SpotMate: ${error.message}`);
 }
@@ -159,7 +145,7 @@ class SpotMate {
     if (!this._cookie ||!this._token) await this._visit();
     try {
       const response = await axios.post(
-        "https://spotmate.online/convert",
+        'https://spotmate.online/convert',
         { urls: spotifyUrl},
         { headers: this._getHeaders()}
 );
@@ -171,18 +157,18 @@ class SpotMate {
 
   _getHeaders() {
     return {
-      cookie: this._cookie,
-      "x-csrf-token": this._token,
-      origin: "https://spotmate.online",
-      referer: "https://spotmate.online/en",
-      "user-agent": "Mozilla/5.0 (Linux; Android 10)",
-      "content-type": "application/json",
+      'cookie': this._cookie,
+      'x-csrf-token': this._token,
+      'origin': 'https://spotmate.online',
+      'referer': 'https://spotmate.online/en',
+      'user-agent': 'Mozilla/5.0 (Linux; Android 10)',
+      'content-type': 'application/json',
 };
 }
 
   clear() {
     this._cookie = null;
     this._token = null;
-    console.log("🧹 Cookie y token borrados.");
+    console.log('🧹 Cookie y token borrados.');
 }
-}
+               }
