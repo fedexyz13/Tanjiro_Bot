@@ -1,5 +1,5 @@
-import { xpRange} from '../lib/levelling.js'
-import fetch from 'node-fetch'
+import { xpRange} from '../lib/levelling.js';
+import fetch from 'node-fetch';
 
 const channelRD = {
   id: '120363402097425674@newsletter',
@@ -79,8 +79,7 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
 .filter(menu => menu.tags.includes(tag))
 .map(menu =>
             menu.help.map(cmd => body.replace(/%cmd/g, menu.prefix? cmd: _p + cmd)).join('\n')
-)
-.join('\n');
+).join('\n');
         return `${header.replace(/%category/g, tags[tag])}${cmds}${footer}`;
 }),
       after
@@ -100,41 +99,22 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
 
     const text = _text.replace(/%(\w+)/g, (_, key) => replace[key] || '');
 
-    const imageURL = 'https://files.catbox.moe/wav09n.jpg';
-    const imgBuffer = await fetch(imageURL).then(res => res.buffer());
-
-    await conn.sendMessage(
-      m.chat,
-      {
-        document: imgBuffer,
-        fileName: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍.zip',
-        mimetype: 'application/zip',
-        caption: text,
-        fileLength: 99999999,
-        contextInfo: {
-          mentionedJid: [m.sender],
-          isForwarded: true,
-          forwardingScore: 999,
-          forwardedNewsletterMessageInfo: {
-            newsletterJid: channelRD.id,
-            serverMessageId: 100,
-            newsletterName: channelRD.name
-},
-          externalAdReply: {
-            title: "会 𝖯𝖺𝗇𝖾𝗅 𝗌𝗈𝗅𝖺𝗋 - 𝖳𝖺𝗇𝗃𝗂𝗋𝗈 𝖡𝗈𝗍",
-            body: "Invoca tus técnicas desde el libro de respiración",
-            thumbnail: imgBuffer,
-            sourceUrl: "https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N",
-            mediaType: 1,
-            renderLargerThumbnail: true
+    await conn.sendMessage(m.chat, {
+      text,
+      contextInfo: {
+        mentionedJid: [m.sender],
+        isForwarded: true,
+        forwardingScore: 999,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: channelRD.id,
+          serverMessageId: 100,
+          newsletterName: channelRD.name
 }
 }
-},
-      { quoted: m}
-);
+}, { quoted: m});
 
 } catch (e) {
-    console.error(e);
+    console.error('[❌] Error en menú Tanjiro:', e);
     conn.reply(m.chat, '❎ TanjiroBot tropezó durante su respiración. Intenta de nuevo.', m);
 }
 };
