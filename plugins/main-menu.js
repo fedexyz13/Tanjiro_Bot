@@ -1,6 +1,11 @@
 import { xpRange} from '../lib/levelling.js'
 import fetch from 'node-fetch'
 
+const channelRD = {
+  id: '120363402097425674@newsletter',
+  name: 'Canal Oficial del Dojo del Sol 🌄'
+};
+
 const textTanjiro = (text) => {
   const charset = {
     a:'ᴀ', b:'ʙ', c:'ᴄ', d:'ᴅ', e:'ᴇ', f:'ꜰ', g:'ɢ',
