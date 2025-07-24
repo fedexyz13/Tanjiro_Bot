@@ -11,7 +11,7 @@ let handler = async (m, { text, conn, command}) => {
       return conn.reply(m.chat, `
 🌸 *Tanjiro_Bot_MD | Búsqueda espiritual en TikTok*
 
-📎 Ingresa una palabra clave para buscar un video.
+📎 Ingresa una palabra clave para buscar contenido.
 
 🧭 Ejemplo:
 ${command} entrenamiento samurái
@@ -27,19 +27,20 @@ ${command} entrenamiento samurái
       return conn.reply(m.chat, '❌ No se encontraron resultados espirituales en TikTok.', m);
 }
 
-    const video = json.result[Math.floor(Math.random() * json.result.length)];
+    const selectedVideos = json.result.slice(0, 5); // 🧘 Solo los primeros 5
 
-    const {
-      title,
-      duration,
-      play,
-      digg_count,
-      comment_count,
-      share_count,
-      author
+    for (const video of selectedVideos) {
+      const {
+        title,
+        duration,
+        play,
+        digg_count,
+        comment_count,
+        share_count,
+        author
 } = video;
 
-    const caption = `
+      const caption = `
 ╭─「🌸 TikTok - Espíritu Solar 🌸」
 │
 │ 🎬 *${title}*
@@ -52,35 +53,38 @@ ${command} entrenamiento samurái
 ╰─🧣 *Tanjiro_Bot_MD | Dojo del Sol*
 `;
 
-    await conn.sendMessage(m.chat, {
-      video: { url: play},
-      caption,
-      contextInfo: {
-        mentionedJid: [m.sender],
-        forwardingScore: 999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: channelRD.id,
-          serverMessageId: 222,
-          newsletterName: channelRD.name
+      await conn.sendMessage(m.chat, {
+        video: { url: play},
+        caption,
+        contextInfo: {
+          mentionedJid: [m.sender],
+          forwardingScore: 999,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: channelRD.id,
+            serverMessageId: 222,
+            newsletterName: channelRD.name
 },
-        externalAdReply: {
-          title: title,
-          body: `Autor: ${author.nickname}`,
-          thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
-          mediaType: 1,
-          sourceUrl: `https://www.tiktok.com/@${author.unique_id}`,
-          renderLargerThumbnail: true
+          externalAdReply: {
+            title: title,
+            body: `Autor: ${author.nickname}`,
+            thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
+            mediaType: 1,
+            sourceUrl: `https://www.tiktok.com/@${author.unique_id}`,
+            renderLargerThumbnail: true
 }
 }
 }, { quoted: m});
+
+      await new Promise(resolve => setTimeout(resolve, 1200)); // ✨ Pausa entre envíos
+}
 
     await m.react('✅');
 
 } catch (e) {
     console.error(e);
     await m.react('❌');
-    m.reply(`❌ *Error espiritual al invocar el video*\n📄 ${e.message || e}`);
+    m.reply(`❌ *Error espiritual al invocar los videos*\n📄 ${e.message || e}`);
 }
 };
 
