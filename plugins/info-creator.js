@@ -49,6 +49,6 @@ Por favor, solo escribe si el mensaje es importante.
 };
 
 handler.command = ['creador', 'creator', 'contacto'];
-handler.help = ['creador'];
+handler.help = ['creador', 'owner'];
 handler.tags = ['main'];
 export default handler;
