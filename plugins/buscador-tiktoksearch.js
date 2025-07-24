@@ -1,60 +1,90 @@
-import axios from 'axios'
-const {proto, generateWAMessageFromContent, prepareWAMessageMedia, generateWAMessageContent, getDevice} = (await import("@whiskeysockets/baileys")).default
+import fetch from 'node-fetch';
 
-let handler = async (message, { conn, text, usedPrefix, command }) => {
-if (!text) return conn.reply(message.chat, `${emoji} Por favor, ingrese lo que desea buscar en tiktok.`, message)
-async function createVideoMessage(url) {
-const { videoMessage } = await generateWAMessageContent({ video: { url } }, { upload: conn.waUploadToServer })
-return videoMessage
+const channelRD = {
+  id: '120363402097425674@newsletter',
+  name: 'Canal Oficial del Dojo del Sol 🌄'
+};
+
+let handler = async (m, { text, conn, command}) => {
+  try {
+    if (!text) {
+      return conn.reply(m.chat, `
+🌸 *Tanjiro_Bot_MD | Búsqueda espiritual en TikTok*
+
+📎 Ingresa una palabra clave para buscar un video.
+
+🧭 Ejemplo:
+${command} entrenamiento samurái
+`, m);
 }
-async function shuffleArray(array) {
-for (let i = array.length - 1; i > 0; i--) {
-const j = Math.floor(Math.random() * (i + 1));
-[array[i], array[j]] = [array[j], array[i]]
+
+    await conn.sendMessage(m.chat, { react: { text: '⏳', key: m.key}});
+
+    const res = await fetch(`https://www.sankavolereii.my.id/search/tiktok?apikey=planaai&q=${encodeURIComponent(text)}`);
+    const json = await res.json();
+
+    if (!json.status ||!json.result.length) {
+      return conn.reply(m.chat, '❌ No se encontraron resultados espirituales en TikTok.', m);
 }
-}
-try {
-await message.react(rwait)
-conn.reply(message.chat, `${emoji2} Descargando Su Video, espere un momento...`, message)
-let results = []
-let { data: response } = await axios.get('https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=' + text)
-let searchResults = response.data
-shuffleArray(searchResults)
-let selectedResults = searchResults.splice(0, 7)
-for (let result of selectedResults) {
-results.push({
-body: proto.Message.InteractiveMessage.Body.fromObject({ text: null }),
-footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: dev }),
-header: proto.Message.InteractiveMessage.Header.fromObject({
-title: '' + result.title,
-hasMediaAttachment: true,
-videoMessage: await createVideoMessage(result.nowm)
-}),
-nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({ buttons: [] })})}
-const responseMessage = generateWAMessageFromContent(message.chat, {
-viewOnceMessage: {
-message: {
-messageContextInfo: {
-deviceListMetadata: {},
-deviceListMetadataVersion: 2
+
+    const video = json.result[Math.floor(Math.random() * json.result.length)];
+
+    const {
+      title,
+      duration,
+      play,
+      digg_count,
+      comment_count,
+      share_count,
+      author
+} = video;
+
+    const caption = `
+╭─「🌸 TikTok - Espíritu Solar 🌸」
+│
+│ 🎬 *${title}*
+│ 👤 *${author.nickname}* (@${author.unique_id})
+│ ⏱️ *Duración:* ${duration}s
+│ ❤️ *Me gusta:* ${digg_count.toLocaleString()}
+│ 💬 *Comentarios:* ${comment_count.toLocaleString()}
+│ 🔁 *Compartir:* ${share_count.toLocaleString()}
+│
+╰─🧣 *Tanjiro_Bot_MD | Dojo del Sol*
+`;
+
+    await conn.sendMessage(m.chat, {
+      video: { url: play},
+      caption,
+      contextInfo: {
+        mentionedJid: [m.sender],
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: channelRD.id,
+          serverMessageId: 222,
+          newsletterName: channelRD.name
 },
-interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-body: proto.Message.InteractiveMessage.Body.create({ text: `${emoji} Resultado de: ` + text }),
-footer: proto.Message.InteractiveMessage.Footer.create({ text: '★ Tanjiro - Tiktoks ★' }),
-header: proto.Message.InteractiveMessage.Header.create({ hasMediaAttachment: false }),
-carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({ cards: [...results] })})}}
-}, { quoted: message })
-await message.react(done)
-await conn.relayMessage(message.chat, responseMessage.message, { messageId: responseMessage.key.id })
-} catch (error) {
-await conn.reply(message.chat, error.toString(), message)
-}}
+        externalAdReply: {
+          title: title,
+          body: `Autor: ${author.nickname}`,
+          thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
+          mediaType: 1,
+          sourceUrl: `https://www.tiktok.com/@${author.unique_id}`,
+          renderLargerThumbnail: true
+}
+}
+}, { quoted: m});
 
-handler.help = ['tiktoksearch <txt>']
-handler.tags = ['buscador']
-handler.command = ['tiktoksearch', 'ttss', 'tiktoks']
-handler.group = true
-handler.register = true
-handler.coin = 2
+    await m.react('✅');
 
-export default handler
+} catch (e) {
+    console.error(e);
+    await m.react('❌');
+    m.reply(`❌ *Error espiritual al invocar el video*\n📄 ${e.message || e}`);
+}
+};
+
+handler.help = ['ttsearch <palabra clave>'];
+handler.tags = ['buscador'];
+handler.command = ['ttsearch', 'tiktoksearch'];
+export default handler;
