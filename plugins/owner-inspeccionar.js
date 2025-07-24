@@ -6,102 +6,132 @@ const channelRD = {
 let handler = async (m, { conn, args, usedPrefix, command}) => {
   if (!args[0]) {
     return conn.reply(m.chat, `
-⚠️ *Enlace faltante*
+📌 *Falta el enlace a inspeccionar*
 
-📎 Por favor, proporciona la URL del grupo o canal que deseas inspeccionar.
+Por favor, proporciona un link de grupo o canal de WhatsApp.
 
-📌 Ejemplo:
-${usedPrefix + command} https://chat.whatsapp.com/XYZ123abcDEF
+📎 Ejemplo:
+${usedPrefix + command} https://chat.whatsapp.com/XYZabc123
+${usedPrefix + command} https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N
 `, m);
 }
 
-  const url = args[0];
+  let link = args[0];
+  await m.react('🧭');
+
   try {
-    await m.react('🕵️');
+    // Detecta si el enlace es de grupo o canal
+    if (link.includes('chat.whatsapp.com')) {
+      const chatID = link.split('/').pop().trim();
+      const id = await conn.groupAcceptInvite(chatID); // Este método no une al grupo si se usa correctamente
 
-    // 🧪 Simulación temporal (mock) de datos del grupo/canal
-    const mockData = {
-      name: 'Dojo Solar',
-      size: 54,
-      isCommunity: false,
-      linkedParent: '1209876543210@g.us',
-      restrict: true,
-      announce: false,
-      isCommunityAnnounce: false,
-      joinApprovalMode: true,
-      memberAddMode: true,
-      participants: [
-        { id: '1234567890@s.whatsapp.net', admin: 'admin'},
-        { id: '9876543210@s.whatsapp.net', admin: 'superadmin'}
-      ]
-};
+      const metadata = await conn.groupMetadata(id);
 
-    const nameCommunity = mockData.name;
-    const caption = (mockData.participants && mockData.participants.length> 0
-? mockData.participants
+      const admins = metadata.participants
 .filter(u => u.admin === 'admin' || u.admin === 'superadmin')
 .map((u, i) => `${i + 1}. @${u.id.split('@')[0]}${u.admin === 'superadmin'? ' (superadmin)': ' (admin)'}`)
-.join('\n')
-: 'No encontrado') +
-    `\n\n🔰 *Usuarios en total:*\n${mockData.size || 'Cantidad no encontrada'}\n\n` +
-    `✨ *Información avanzada* ✨\n\n` +
-    `🔎 *Comunidad vinculada al grupo:*\n${mockData.isCommunity? 'Este grupo es un chat de avisos': `${mockData.linkedParent? '🆔 ' + mockData.linkedParent: 'Este grupo'} ${nameCommunity}`}\n\n` +
-    `⚠️ *Restricciones:* ${mockData.restrict? '✅': '❌'}\n` +
-    `📢 *Anuncios:* ${mockData.announce? '✅': '❌'}\n` +
-    `🏘️ *¿Es comunidad?:* ${mockData.isCommunity? '✅': '❌'}\n` +
-    `📯 *¿Es anuncio de comunidad?:* ${mockData.isCommunityAnnounce? '✅': '❌'}\n` +
-    `🤝 *Tiene aprobación de miembros:* ${mockData.joinApprovalMode? '✅': '❌'}\n` +
-    `🆕 *Puede agregar miembros futuros:* ${mockData.memberAddMode? '✅': '❌'}\n`;
+.join('\n');
 
-    const decorado = caption.trim()
-.replace(/Id/g, '🆔 Identificador')
-.replace(/State/g, '📌 Estado')
-.replace(/Creation Time/g, '📅 Fecha de creación')
-.replace(/Name Time/g, '✏️ Fecha de modificación del nombre')
-.replace(/Name/g, '🏷️ Nombre')
-.replace(/Description Time/g, '📝 Fecha de modificación de la descripción')
-.replace(/Description/g, '📜 Descripción')
-.replace(/Invite/g, '📩 Invitación')
-.replace(/Handle/g, '👤 Alias')
-.replace(/Picture/g, '🖼️ Imagen')
-.replace(/Preview/g, '👀 Vista previa')
-.replace(/Reaction Codes/g, '😃 Reacciones')
-.replace(/Subscribers/g, '👥 Suscriptores')
-.replace(/Verification/g, '✅ Verificación')
-.replace(/Viewer Metadata/g, '🔍 Datos avanzados');
+      const caption = `
+🏘️ *Inspección del Grupo*
 
-    await conn.sendMessage(m.chat, {
-      text: decorado,
-      contextInfo: {
-        mentionedJid: [m.sender],
-        forwardingScore: 999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: channelRD.id,
-          serverMessageId: 100,
-          newsletterName: channelRD.name
+🆔 ID del grupo:
+${id}
+
+🏷️ Nombre: ${metadata.subject}
+👤 Participantes: ${metadata.participants.length}
+
+🔧 Administradores:
+${admins || 'No se encontraron administradores'}
+
+🌐 Configuraciones:
+📢 Anuncios: ${metadata.announce? '✅ Activado': '❌ Desactivado'}
+🔒 Restricciones: ${metadata.restrict? '✅': '❌'}
+🤝 Aprobación de miembros: ${metadata.joinApprovalMode? '✅': '❌'}
+📩 Invitación: https://chat.whatsapp.com/${chatID}
+`;
+
+      await conn.sendMessage(m.chat, {
+        text: caption,
+        contextInfo: {
+          mentionedJid: [m.sender],
+          forwardingScore: 999,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: channelRD.id,
+            serverMessageId: 100,
+            newsletterName: channelRD.name
 },
-        externalAdReply: {
-          title: 'Tanjiro_Bot_MD | Inspección de Grupo',
-          body: 'Lectura espiritual completada con éxito',
-          thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
-          sourceUrl: url,
-          mediaType: 1,
-          renderLargerThumbnail: true
+          externalAdReply: {
+            title: 'Tanjiro_Bot_MD | Grupo inspeccionado',
+            body: metadata.subject,
+            thumbnailUrl: metadata.pictureUrl || 'https://files.catbox.moe/wav09n.jpg',
+            sourceUrl: link,
+            mediaType: 1,
+            renderLargerThumbnail: true
 }
 }
 }, { quoted: m});
+}
+
+    else if (link.includes('whatsapp.com/channel/')) {
+      const channelID = link.split('/').pop().trim() + '@newsletter';
+
+      const info = await conn.channelMetadata(channelID);
+
+      const caption = `
+📰 *Inspección de Canal*
+
+🆔 ID del canal:
+${channelID}
+
+🏷️ Nombre: ${info.name}
+📜 Descripción: ${info.desc || 'Sin descripción'}
+👥 Suscriptores: ${info.size || 'Desconocido'}
+🖼️ Imagen: ${info.pictureUrl || 'No definida'}
+
+✅ Verificado: ${info.verified? 'Sí': 'No'}
+🔗 Enlace directo: https://whatsapp.com/channel/${channelID.split('@')[0]}
+`;
+
+      await conn.sendMessage(m.chat, {
+        text: caption,
+        contextInfo: {
+          mentionedJid: [m.sender],
+          forwardingScore: 999,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: channelRD.id,
+            serverMessageId: 101,
+            newsletterName: channelRD.name
+},
+          externalAdReply: {
+            title: 'Tanjiro_Bot_MD | Canal inspeccionado',
+            body: info.name,
+            thumbnailUrl: info.pictureUrl || 'https://files.catbox.moe/wav09n.jpg',
+            sourceUrl: link,
+            mediaType: 1,
+            renderLargerThumbnail: true
+}
+}
+}, { quoted: m});
+}
+
+    else {
+      throw new Error('Enlace desconocido. Debe ser de grupo o canal.');
+}
 
     await m.react('✅');
 
 } catch (e) {
     await m.react('❌');
-    conn.reply(m.chat, `❎ Ocurrió un error al inspeccionar:\n${e.message}`, m);
+    conn.reply(m.chat, `❎ Error al inspeccionar:\n${e.message}`, m);
 }
 };
-handler.command = ['inspeccionar', 'scan', 'grupoinfo', 'canalinfo'];
+
+handler.command = ['inspeccionar', 'scaninfo', 'infobot'];
 handler.tags = ['info'];
-handler.help = ['inspeccionar <url del grupo o canal>'];
+handler.help = ['inspeccionar <link grupo/canal>'];
 handler.register = true;
 
 export default handler;
