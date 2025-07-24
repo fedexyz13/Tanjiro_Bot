@@ -99,11 +99,12 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
 
     const text = _text.replace(/%(\w+)/g, (_, key) => replace[key] || '');
 
-     const imageURL = 'https://files.catbox.moe/wav09n.jpg';
+    const imageURL = 'https://files.catbox.moe/wav09n.jpg';
     const imgBuffer = await fetch(imageURL).then(res => res.buffer());
-    
+
     await conn.sendMessage(m.chat, {
-      text,
+      image: imgBuffer,
+      caption: text,
       contextInfo: {
         mentionedJid: [m.sender],
         isForwarded: true,
@@ -111,7 +112,6 @@ let handler = async (m, { conn, usedPrefix: _p}) => {
         forwardedNewsletterMessageInfo: {
           newsletterJid: channelRD.id,
           serverMessageId: 100,
-          thumbnail: imgBuffer,
           newsletterName: channelRD.name
 }
 }
