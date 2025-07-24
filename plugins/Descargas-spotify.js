@@ -57,19 +57,18 @@ let handler = async (m, { conn, text}) => {
 }
 
     const cap = `
-\`\`\`会== 🌸 TANJIRO_BOT ==会
-
-≡ Título: » ${track.name}
-≡ Artista: » ${track.artists.map((a) => a.name).join(", ")}
-≡ Álbum: » ${track.album.name}
-≡ Fecha: » ${track.album.release_date}
-≡ Popularidad: » ${track.popularity}/100
-≡ Duración: » ${(track.duration_ms / 60000).toFixed(2)} min
-≡ ISRC: » ${track.external_ids?.isrc || "No disponible"}
-≡ URL: » ${track.external_urls.spotify}
-
-> 🧣 Dev: fedexyz
-\`\`\`
+╭─「🌸 会 *Tanjiro_Bot_MD* 会 🌸」
+│
+│ 🏷️ *Título:* ${track.name}
+│ 🎤 *Artista:* ${track.artists.map((a) => a.name).join(", ")}
+│ 💿 *Álbum:* ${track.album.name}
+│ 📅 *Fecha:* ${track.album.release_date}
+│ 🌟 *Popularidad:* ${track.popularity}/100
+│ ⏱️ *Duración:* ${(track.duration_ms / 60000).toFixed(2)} minutos
+│ 🆔 *ISRC:* ${track.external_ids?.isrc || "No disponible"}
+│ 🔗 *Spotify:* ${track.external_urls.spotify}
+│
+╰─🧣 *Desarrollador:* fedexyz
 `;
     await m.reply(cap);
 
