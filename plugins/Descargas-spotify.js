@@ -73,7 +73,7 @@ let handler = async (m, { conn, text}) => {
 │ 🆔 *ISRC:* ${track.external_ids?.isrc || "No disponible"}
 │ 🔗 *Spotify:* ${track.external_urls.spotify}
 │
-╰─🧣 *Desarrollador:* fedexyz
+╰─🧣 *Dev; fedexyz*
 `;
 
     await m.reply(cap);
