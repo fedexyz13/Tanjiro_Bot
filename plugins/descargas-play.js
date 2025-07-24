@@ -79,7 +79,7 @@ const handler = async (m, { conn, text, command}) => {
     const thumb = await fetch(thumbnail).then(res => res.buffer());
 
     const info = `
-乂会≡ 🌸 *TanjiroBot - Informe de Descarga* ≡会乂
+乂会≡ 🌸 *Tanjiro_Bot - Informe de Descarga* ≡会乂
 
 🎬 *Título:* ${title}
 🕰️ *Duración:* ${timestamp}
