@@ -1,5 +1,10 @@
 import fetch from 'node-fetch';
 
+const channelRD = {
+  id: '120363402097425674@newsletter',
+  name: 'Canal Oficial del Dojo del Sol 🌄'
+};
+
 let handler = async (m, { conn}) => {
   let contacto = '+5491156178758'; // Número del maestro creador
   let nombreDojo = 'Tanjiro_Bot_MD | Creador Oficial';
@@ -28,7 +33,12 @@ Si deseas integrar Tanjiro_Bot_MD a tu grupo, hablar con el maestro o colaborar 
         mentionedJid: [m.sender],
         forwardingScore: 999,
         isForwarded: true,
-        businessMessageForwardedFrom: 'TanjiroBot_MD Creador Oficial'
+        businessMessageForwardedFrom: 'TanjiroBot_MD Creador Oficial',
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: channelRD.id,
+          serverMessageId: 100,
+          newsletterName: channelRD.name
+}
 }
 }, { quoted: m});
 
