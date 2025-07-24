@@ -2,28 +2,28 @@ import fetch from 'node-fetch';
 
 const channelRD = {
   id: '120363402097425674@newsletter',
-  name: 'Canal Oficial del Dojo del Sol 🌄'
+  name: 'Canal Oficial del Proyecto'
 };
 
 let handler = async (m, { conn}) => {
-  let contacto = '+5491156178758'; // Número del maestro creador
-  let nombreDojo = 'Tanjiro_Bot_MD | Creador Oficial';
+  const contacto = '+5491156178758';
+  const nombre = 'Bot Oficial | Creador';
 
-  let mensaje = `
-🌄 *Contacto del Creador de Tanjiro_Bot_MD* ⚔️
+  const mensaje = `
+📇 *Información de contacto*
 
-📜 Bienvenido, joven cazador.
-Si deseas integrar Tanjiro_Bot_MD a tu grupo, hablar con el maestro o colaborar con el Dojo del Sol, este es el contacto oficial.
+Este es el número oficial del creador del bot.
+Si deseas agregar el bot a tu grupo o realizar una consulta, puedes escribirle directamente.
 
-👤 *Nombre del dojo:* ${nombreDojo}
-📞 *Número directo:* ${contacto}
-🔗 Enlace: https://wa.me/${contacto.replace('+', '')}
+👤 Creador: ${nombre}
+📞 Número: ${contacto}
+🔗 Enlace directo: https://wa.me/${contacto.replace('+', '')}
 
-📝 Manda mensaje solo si es digno de atención.
+Por favor, solo escribe si el mensaje es importante.
 `.trim();
 
   try {
-    const res = await fetch("https://files.catbox.moe/wav09n.jpg"); // Imagen estilo Tanjiro
+    const res = await fetch("https://files.catbox.moe/wav09n.jpg");
     const buffer = await res.buffer();
 
     await conn.sendMessage(m.chat, {
@@ -33,7 +33,7 @@ Si deseas integrar Tanjiro_Bot_MD a tu grupo, hablar con el maestro o colaborar 
         mentionedJid: [m.sender],
         forwardingScore: 999,
         isForwarded: true,
-        businessMessageForwardedFrom: 'TanjiroBot_MD Creador Oficial',
+        businessMessageForwardedFrom: nombre,
         forwardedNewsletterMessageInfo: {
           newsletterJid: channelRD.id,
           serverMessageId: 100,
@@ -43,8 +43,8 @@ Si deseas integrar Tanjiro_Bot_MD a tu grupo, hablar con el maestro o colaborar 
 }, { quoted: m});
 
 } catch (e) {
-    console.error('[❌] Error al enviar contacto del dojo:', e);
-    m.reply('🚫 El maestro está meditando. Intenta más tarde.');
+    console.error('[❌] Error al enviar el contacto:', e);
+    await m.reply('🚫 No se pudo enviar el contacto en este momento. Intenta más tarde.');
 }
 };
 
