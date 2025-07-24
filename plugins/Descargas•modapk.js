@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 const channelRD = {
   id: '120363402097425674@newsletter',
-  name: 'Canal Oficial del Dojo del Sol 🌄'
+  name: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣'
 };
 
 let handler = async (m, { conn, args, usedPrefix, command, isOwner}) => {
