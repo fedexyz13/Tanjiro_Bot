@@ -40,8 +40,8 @@ var handler = async (m, { usedPrefix, command }) => {
     }
 };
 
-handler.command = ['errores'];
-handler.help = ['errores'];
+handler.command = ['revisar'];
+handler.help = ['revisar'];
 handler.tags = ['tools'];
 handler.register = true;
 
