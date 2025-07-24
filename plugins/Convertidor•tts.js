@@ -3,6 +3,7 @@ import { readFileSync, unlinkSync} from 'fs';
 import { join} from 'path';
 
 const defaultLang = 'es';
+
 const channelRD = {
   id: '120363402097425674@newsletter',
   name: '会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣'
@@ -20,42 +21,39 @@ const handler = async (m, { conn, args, usedPrefix, command}) => {
   if (!text && m.quoted?.text) text = m.quoted.text;
 
   let res;
-
   try {
     res = await tts(text, lang);
 } catch (e) {
-    console.error('❌ Error al convertir TTS:', e.message || e);
     if (!text) {
       return conn.sendMessage(m.chat, {
         text: `
-🚩 *Tanjiro_Bot_MD | Voz espiritual ausente*
+🚩 *Tanjiro_Bot_MD | Voz no invocada*
 
-📌 Te faltó ingresar el texto que deseas pronunciar.
+📌 Falta ingresar un texto para convertir en voz.
 
 🗣️ Ejemplo:
 ${usedPrefix + command} Hola Tanjiro
-        `,
+`,
         contextInfo: {
-          mentionedJid: [m.sender],
           forwardingScore: 999,
           isForwarded: true,
+          mentionedJid: [m.sender],
           forwardedNewsletterMessageInfo: {
             newsletterJid: channelRD.id,
-            serverMessageId: 301,
+            serverMessageId: 333,
             newsletterName: channelRD.name
 },
           externalAdReply: {
-            title: 'Tanjiro_Bot_MD | Generador de voz',
-            body: 'Respira y transforma tus palabras',
+            title: 'Tanjiro_Bot_MD | TTS',
+            body: 'Convierte palabras en espíritu sonoro',
             thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
-            sourceUrl: 'https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N',
             mediaType: 1,
+            sourceUrl: 'https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N',
             renderLargerThumbnail: true
 }
 }
 }, { quoted: m});
 }
-
     res = await tts(text, defaultLang);
 }
 
@@ -64,25 +62,25 @@ ${usedPrefix + command} Hola Tanjiro
       m.chat,
       res,
       'vozTanjiro.opus',
-      `🔊 *Tanjiro invocó tu frase con voz espiritual*\n> ${text}`,
+      `🔊 *Voz espiritual invocada por Tanjiro*\n\n🗣️ "${text}"`,
       m,
       true,
       {
         contextInfo: {
-          mentionedJid: [m.sender],
           forwardingScore: 999,
           isForwarded: true,
+          mentionedJid: [m.sender],
           forwardedNewsletterMessageInfo: {
             newsletterJid: channelRD.id,
-            serverMessageId: 302,
+            serverMessageId: 334,
             newsletterName: channelRD.name
 },
           externalAdReply: {
             title: 'Tanjiro_Bot_MD | Voz generada',
-            body: 'El sonido que nace de tu aliento',
+            body: 'Respira profundo. Tu voz ahora resuena.',
             thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
-            sourceUrl: 'https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N',
             mediaType: 1,
+            sourceUrl: 'https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N',
             renderLargerThumbnail: true
 }
 }
@@ -100,7 +98,7 @@ function tts(text, lang = 'es') {
   return new Promise((resolve, reject) => {
     try {
       const speaker = gtts(lang);
-      const filePath = join(global.__dirname(import.meta.url), '../tmp', `${Date.now()}.wav`);
+      const filePath = join(global.__dirname(import.meta.url), '../tmp', Date.now() + '.wav');
       speaker.save(filePath, text, () => {
         const buffer = readFileSync(filePath);
         unlinkSync(filePath);
