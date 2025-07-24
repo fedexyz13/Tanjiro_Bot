@@ -14,7 +14,12 @@ let handler = async (message, { conn, text, usedPrefix, command}) => {
   const dev = 'Tanjiro_Bot_MD | 🌄 Dojo del Sol';
 
   if (!text) {
-    return conn.reply(message.chat, `${emoji} Por favor, ingresa lo que deseas buscar en TikTok.\n\n📌 Ejemplo:\n${usedPrefix + command} música relajante`, message);
+    return conn.reply(message.chat, `
+${emoji} *Por favor, ingresa lo que deseas buscar en TikTok.*
+
+📎 Ejemplo:
+${usedPrefix + command} memes latinos
+`, message);
 }
 
   const shuffleArray = (array) => {
@@ -26,13 +31,13 @@ let handler = async (message, { conn, text, usedPrefix, command}) => {
 
   try {
     await message.react(rwait);
-    await conn.reply(message.chat, `${emoji2} Descargando videos... Respira con calma mientras invoco los archivos.`, message);
+    await conn.reply(message.chat, `${emoji2} *Descargando videos...*\nRespira con calma mientras invoco los archivos.`, message);
 
     const { data: response} = await axios.get(`https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=${encodeURIComponent(text)}`);
     let searchResults = response.data;
     shuffleArray(searchResults);
 
-    const selectedResults = searchResults.slice(0, 7);
+    const selectedResults = searchResults.slice(0, 5); // 👈 Solo 5 videos
 
     for (let result of selectedResults) {
       await conn.sendMessage(message.chat, {
@@ -61,7 +66,7 @@ let handler = async (message, { conn, text, usedPrefix, command}) => {
 }
 }, { quoted: message});
 
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Pausa entre envíos
+      await new Promise(resolve => setTimeout(resolve, 1200)); // 🧘 Pausa entre envíos
 }
 
     await message.react(done);
@@ -69,7 +74,7 @@ let handler = async (message, { conn, text, usedPrefix, command}) => {
 } catch (error) {
     console.error('[❌] Error en tiktoksearch:', error);
     await message.react('❌');
-    await conn.reply(message.chat, `❌ Ocurrió un error al buscar videos.\n🔍 Detalle: ${error.message}`, message);
+    await conn.reply(message.chat, `❌ *Ocurrió un error al buscar videos.*\n🔍 ${error.message}`, message);
 }
 };
 
