@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const channelRD = {
   id: '120363402097425674@newsletter',
   name: 'Canal Oficial del Dojo del Sol 🌄'
@@ -21,24 +19,39 @@ ${usedPrefix + command} https://chat.whatsapp.com/XYZ123abcDEF
   try {
     await m.react('🕵️');
 
-    const res = await fetch(`https://api-inspeccion.dominio.com/scan?url=${encodeURIComponent(url)}`);
-    const info = await res.json();
-    const nameCommunity = info.name || '';
-    const caption = (info.participants && info.participants.length> 0
-? info.participants
+    // 🧪 Simulación temporal (mock) de datos del grupo/canal
+    const mockData = {
+      name: 'Dojo Solar',
+      size: 54,
+      isCommunity: false,
+      linkedParent: '1209876543210@g.us',
+      restrict: true,
+      announce: false,
+      isCommunityAnnounce: false,
+      joinApprovalMode: true,
+      memberAddMode: true,
+      participants: [
+        { id: '1234567890@s.whatsapp.net', admin: 'admin'},
+        { id: '9876543210@s.whatsapp.net', admin: 'superadmin'}
+      ]
+};
+
+    const nameCommunity = mockData.name;
+    const caption = (mockData.participants && mockData.participants.length> 0
+? mockData.participants
 .filter(u => u.admin === 'admin' || u.admin === 'superadmin')
-.map((u, i) => `${i + 1}. @${u.id?.split('@')[0]}${u.admin === 'superadmin'? ' (superadmin)': ' (admin)'}`)
+.map((u, i) => `${i + 1}. @${u.id.split('@')[0]}${u.admin === 'superadmin'? ' (superadmin)': ' (admin)'}`)
 .join('\n')
 : 'No encontrado') +
-    `\n\n🔰 *Usuarios en total:*\n${info.size || 'Cantidad no encontrada'}\n\n` +
+    `\n\n🔰 *Usuarios en total:*\n${mockData.size || 'Cantidad no encontrada'}\n\n` +
     `✨ *Información avanzada* ✨\n\n` +
-    `🔎 *Comunidad vinculada al grupo:*\n${info.isCommunity? 'Este grupo es un chat de avisos': `${info.linkedParent? '🆔 ' + info.linkedParent: 'Este grupo'} ${nameCommunity}`}\n\n` +
-    `⚠️ *Restricciones:* ${info.restrict? '✅': '❌'}\n` +
-    `📢 *Anuncios:* ${info.announce? '✅': '❌'}\n` +
-    `🏘️ *¿Es comunidad?:* ${info.isCommunity? '✅': '❌'}\n` +
-    `📯 *¿Es anuncio de comunidad?:* ${info.isCommunityAnnounce? '✅': '❌'}\n` +
-    `🤝 *Tiene aprobación de miembros:* ${info.joinApprovalMode? '✅': '❌'}\n` +
-    `🆕 *Puede agregar miembros futuros:* ${info.memberAddMode? '✅': '❌'}\n`;
+    `🔎 *Comunidad vinculada al grupo:*\n${mockData.isCommunity? 'Este grupo es un chat de avisos': `${mockData.linkedParent? '🆔 ' + mockData.linkedParent: 'Este grupo'} ${nameCommunity}`}\n\n` +
+    `⚠️ *Restricciones:* ${mockData.restrict? '✅': '❌'}\n` +
+    `📢 *Anuncios:* ${mockData.announce? '✅': '❌'}\n` +
+    `🏘️ *¿Es comunidad?:* ${mockData.isCommunity? '✅': '❌'}\n` +
+    `📯 *¿Es anuncio de comunidad?:* ${mockData.isCommunityAnnounce? '✅': '❌'}\n` +
+    `🤝 *Tiene aprobación de miembros:* ${mockData.joinApprovalMode? '✅': '❌'}\n` +
+    `🆕 *Puede agregar miembros futuros:* ${mockData.memberAddMode? '✅': '❌'}\n`;
 
     const decorado = caption.trim()
 .replace(/Id/g, '🆔 Identificador')
@@ -69,8 +82,8 @@ ${usedPrefix + command} https://chat.whatsapp.com/XYZ123abcDEF
           newsletterName: channelRD.name
 },
         externalAdReply: {
-          title: 'Tanjiro_Bot_MD | Inspección Avanzada',
-          body: 'Análisis completo de grupo o canal realizado',
+          title: 'Tanjiro_Bot_MD | Inspección de Grupo',
+          body: 'Lectura espiritual completada con éxito',
           thumbnailUrl: 'https://files.catbox.moe/wav09n.jpg',
           sourceUrl: url,
           mediaType: 1,
@@ -86,7 +99,6 @@ ${usedPrefix + command} https://chat.whatsapp.com/XYZ123abcDEF
     conn.reply(m.chat, `❎ Ocurrió un error al inspeccionar:\n${e.message}`, m);
 }
 };
-
 handler.command = ['inspeccionar', 'scan', 'grupoinfo', 'canalinfo'];
 handler.tags = ['info'];
 handler.help = ['inspeccionar <url del grupo o canal>'];
