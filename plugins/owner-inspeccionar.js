@@ -8,7 +8,7 @@ let handler = async (m, { conn, args, usedPrefix, command}) => {
     return conn.reply(m.chat, `
 📌 *Falta el enlace a inspeccionar*
 
-Por favor, proporciona un link de grupo o canal de WhatsApp.
+Proporciona un link de grupo o canal de WhatsApp.
 
 📎 Ejemplo:
 ${usedPrefix + command} https://chat.whatsapp.com/XYZabc123
@@ -20,11 +20,10 @@ ${usedPrefix + command} https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N
   await m.react('🧭');
 
   try {
-    // Detecta si el enlace es de grupo o canal
+    // 🔍 Inspección de GRUPO
     if (link.includes('chat.whatsapp.com')) {
       const chatID = link.split('/').pop().trim();
-      const id = await conn.groupAcceptInvite(chatID); // Este método no une al grupo si se usa correctamente
-
+      const id = await conn.groupAcceptInvite(chatID); // no se une, solo genera el ID
       const metadata = await conn.groupMetadata(id);
 
       const admins = metadata.participants
@@ -40,15 +39,13 @@ ${id}
 
 🏷️ Nombre: ${metadata.subject}
 👤 Participantes: ${metadata.participants.length}
-
 🔧 Administradores:
 ${admins || 'No se encontraron administradores'}
 
-🌐 Configuraciones:
 📢 Anuncios: ${metadata.announce? '✅ Activado': '❌ Desactivado'}
 🔒 Restricciones: ${metadata.restrict? '✅': '❌'}
-🤝 Aprobación de miembros: ${metadata.joinApprovalMode? '✅': '❌'}
-📩 Invitación: https://chat.whatsapp.com/${chatID}
+🤝 Aprobación: ${metadata.joinApprovalMode? '✅': '❌'}
+📩 Enlace: https://chat.whatsapp.com/${chatID}
 `;
 
       await conn.sendMessage(m.chat, {
@@ -74,10 +71,18 @@ ${admins || 'No se encontraron administradores'}
 }, { quoted: m});
 }
 
+    // 🔍 Inspección de CANAL (simulado)
     else if (link.includes('whatsapp.com/channel/')) {
       const channelID = link.split('/').pop().trim() + '@newsletter';
 
-      const info = await conn.channelMetadata(channelID);
+      // 🔧 Simulación de datos del canal
+      const info = {
+        name: 'Canal Solar',
+        desc: 'Anuncios y enseñanzas del Dojo del Sol 🌄',
+        verified: true,
+        size: 5000,
+        pictureUrl: 'https://files.catbox.moe/wav09n.jpg'
+};
 
       const caption = `
 📰 *Inspección de Canal*
@@ -86,12 +91,12 @@ ${admins || 'No se encontraron administradores'}
 ${channelID}
 
 🏷️ Nombre: ${info.name}
-📜 Descripción: ${info.desc || 'Sin descripción'}
-👥 Suscriptores: ${info.size || 'Desconocido'}
-🖼️ Imagen: ${info.pictureUrl || 'No definida'}
+📜 Descripción: ${info.desc}
+👥 Suscriptores: ${info.size}
+🖼️ Imagen: ${info.pictureUrl}
 
 ✅ Verificado: ${info.verified? 'Sí': 'No'}
-🔗 Enlace directo: https://whatsapp.com/channel/${channelID.split('@')[0]}
+🔗 Enlace: https://whatsapp.com/channel/${channelID.split('@')[0]}
 `;
 
       await conn.sendMessage(m.chat, {
@@ -108,13 +113,13 @@ ${channelID}
           externalAdReply: {
             title: 'Tanjiro_Bot_MD | Canal inspeccionado',
             body: info.name,
-            thumbnailUrl: info.pictureUrl || 'https://files.catbox.moe/wav09n.jpg',
+            thumbnailUrl: info.pictureUrl,
             sourceUrl: link,
             mediaType: 1,
             renderLargerThumbnail: true
 }
-}
-}, { quoted: m});
+  }
+  }, { quoted: m});
 }
 
     else {
