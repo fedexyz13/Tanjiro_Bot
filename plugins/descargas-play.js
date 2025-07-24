@@ -2,17 +2,20 @@ import fetch from "node-fetch";
 import yts from "yt-search";
 import axios from "axios";
 
+const channelRD = {
+  id: "120363402097425674@newsletter",
+  name: "会 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣"
+};
+
 const formatAudio = ["mp3", "m4a", "webm", "acc", "flac", "opus", "ogg", "wav"];
 const formatVideo = ["360", "480", "720", "1080", "1440", "4k"];
-const limit = 100; // Tamaño límite en MB
+const limit = 100;
 
-// Personalización decorativa
 const packname = "TanjiroBot";
 const dev = "fedexyz";
 const icono = "https://i.ibb.co/fX7YWTk/tanjiro-icon.jpg";
 const redes = "https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N";
 
-// Sistema de descarga usando OceanSaver
 const ddownr = {
   download: async (url, format) => {
     if (!formatAudio.includes(format) &&!formatVideo.includes(format)) {
@@ -22,7 +25,7 @@ const ddownr = {
     const config = {
       method: "GET",
       url: `https://p.oceansaver.in/ajax/download.php?format=${format}&url=${encodeURIComponent(url)}&api=dfcb6d76f2f6a9894gjkege8a4ab232222`,
-      headers: { "User-Agent": "Mozilla/5.0"},
+      headers: { "User-Agent": "Mozilla/5.0"}
 };
 
     try {
@@ -44,7 +47,7 @@ const ddownr = {
     const config = {
       method: "GET",
       url: `https://p.oceansaver.in/ajax/progress.php?id=${id}`,
-      headers: { "User-Agent": "Mozilla/5.0"},
+      headers: { "User-Agent": "Mozilla/5.0"}
 };
 
     try {
@@ -61,13 +64,10 @@ const ddownr = {
 }
 };
 
-// Manejador principal
 const handler = async (m, { conn, text, command}) => {
   await m.react("🌙");
 
-  if (!text.trim()) {
-    return m.reply("🌸 Dime el nombre del video que deseas cazar.");
-}
+  if (!text.trim()) return m.reply("🌸 Dime el nombre del video que deseas cazar.");
 
   try {
     const search = await yts(text);
@@ -94,19 +94,23 @@ const handler = async (m, { conn, text, command}) => {
 
     await conn.sendMessage(m.chat, { image: thumb, caption: info}, { quoted: m});
 
-    // Audio
     if (["play", "yta", "ytmp3"].includes(command)) {
       const api = await ddownr.download(url, "mp3");
       await conn.sendMessage(m.chat, {
         audio: { url: api.downloadUrl},
         mimetype: "audio/mpeg",
-        fileName: `${title}.mp3`
-}, { quoted: m});
-      await m.react("🎵");
+        fileName: `${title}.mp3`,
+        contextInfo: {
+          forwardingScore: 999,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: channelRD.id,
+            serverMessageId: 301,
+            newsletterName: channelRD.name
 }
-
-    // Video
-    else if (["play2", "ytv", "ytmp4"].includes(command)) {
+}
+}, { quoted: m});
+      await m.react("🎵"); } else if (["play2", "ytv", "ytmp4"].includes(command)) {
       const sources = [
         `https://api.siputzx.my.id/api/d/ytmp4?url=${url}`,
         `https://api.zenkey.my.id/api/download/ytmp4?apikey=zenkey&url=${url}`,
@@ -129,15 +133,12 @@ const handler = async (m, { conn, text, command}) => {
               mimetype: "video/mp4",
               thumbnail: thumb,
               contextInfo: {
-                externalAdReply: {
-                  showAdAttribution: true,
-                  title: packname,
-                  body: dev,
-                  mediaType: 1,
-                  previewType: "PHOTO",
-                  thumbnailUrl: icono,
-                  sourceUrl: redes,
-                  renderLargerThumbnail: false
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                  newsletterJid: channelRD.id,
+                  serverMessageId: 302,
+                  newsletterName: channelRD.name
 }
 }
 }, { quoted: m});
