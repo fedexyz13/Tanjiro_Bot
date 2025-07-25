@@ -1,69 +1,63 @@
 import fetch from 'node-fetch';
-const WAMessageStubType = (await import('@whiskeysockets/baileys')).default;
-
-const channelRD = {
-  id: '120363402097425674@newsletter',
-  name: '会 Tanjiro_Bot 🧣'
-};
-
-const welcomeAudio = 'https://files.catbox.moe/2csqwe.mp4';
-const goodbyeAudio = 'https://files.catbox.moe/wi4u63.mp4';
-const icons = 'https://files.catbox.moe/yzl2d9.jpg';
-const redes = 'https://whatsapp.com/channel/0029VbApe6jG8l5Nv43dsC2N';
 
 export async function before(m, { conn}) {
-  if (!m.messageStubType ||!m.isGroup) return;
+  if (!m.isGroup ||!m.messageStubType ||!m.messageStubParameters) return;
 
-  const chat = global.db.data.chats[m.chat];
-  const mentionedJids = m.messageStubParameters.map(p => `${p}@s.whatsapp.net`);
-  const who = m.messageStubParameters[0] + '@s.whatsapp.net';
-  const user = global.db.data.users[who];
-  const userName = user?.name || await conn.getName(who);
+  const groupMetadata = await conn.groupMetadata(m.chat);
+  const participants = m.messageStubParameters || [];
+  const fecha = new Date().toLocaleDateString('es-ES');
+  const audioBienvenida = 'https://files.catbox.moe/wi4u63.mp4';
+  const imagenDefecto = 'https://files.catbox.moe/wav09n.jpg';
 
-  const sendVoice = async (audioURL, titleText, bodyText) => {
-    await conn.sendMessage(m.chat, {
-      audio: { url: audioURL},
-      ptt: true,
-      mimetype: 'audio/mpeg',
-      fileName: 'tanjiro_welcome.opus',
-      seconds: 10,
-      contextInfo: {
-        mentionedJid: mentionedJids,
-        forwardingScore: 999999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: channelRD.id,
-          serverMessageId: '',
-          newsletterName: channelRD.name
-},
-        externalAdReply: {
-          title: titleText,
-          body: bodyText,
-          mediaType: 1,
-          thumbnailUrl: icons,
-          sourceUrl: redes,
-          previewType: 'PHOTO',
-          showAdAttribution: true
-}
-}
-}, { quoted: m});
-};
+  for (const user of participants) {
+    const name = await conn.getName(user);
+    const pp = await conn.profilePictureUrl(user, 'image').catch(() => imagenDefecto);
+    const tag = '@' + user.split('@')[0];
 
-  // 🎉 Bienvenida
-  if (chat.welcome && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
-    await sendVoice(
-      welcomeAudio,
-      '🌸 BIENVENIDO AL DOJO',
-      `🧣 ${userName} se une a la respiración grupal`
-);
-}
+    const bienvenida = `
+╭─── 🌅 Bienvenida al Dojo Solar ───╮
+│
+│ 🧣 *${name}* se ha unido al dojo Tanjiro.
+│ 📅 *Fecha:* ${fecha}
+│ 🏷️ *ID:* ${user}
+│ 💬 *Grupo:* *${groupMetadata.subject}*
+│
+│ Respira profundo, honra el grupo
+│ y canaliza el Ki hacia la armonía.
+│ Que tu estancia sea legendaria 🗡️
+│
+╰──────────────────────────────╯`.trim();
 
-  // 🧘 Despedida
-  if (chat.welcome && [WAMessageStubType.GROUP_PARTICIPANT_REMOVE, WAMessageStubType.GROUP_LEAVE].includes(m.messageStubType)) {
-    await sendVoice(
-      goodbyeAudio,
-      '⚔️ Tanjiro despide con respeto',
-      `🧣 ${userName} abandona el dojo solar`
-);
-}
-}
+    const despedida = `
+╭─── 🍂 Despedida del Dojo ───╮
+│
+│ 🧣 *${name}* ha abandonado el dojo solar.
+│ 📅 *Fecha:* ${fecha}
+│ 🏷️ *ID:* ${user}
+│ 💬 *Grupo:* *${groupMetadata.subject}*
+│
+│ Que el viento te lleve suave
+│ y el sol ilumine tu próximo destino 🐾
+│
+╰──────────────────────────────╯`.trim();
+
+    // BIENVENIDA
+    if (m.messageStubType === 27) {
+      await conn.sendMessage(m.chat, {
+        image: { url: pp},
+        caption: bienvenida,
+        mentions: [user],
+        contextInfo: {
+          externalAdReply: {
+            title: `🧣 𝖳𝖺𝗇𝗃𝗂𝗋𝗈_𝖡𝗈𝗍 🧣`,
+            body: `${name} 🧣`,
+            thumbnailUrl: pp,
+            mediaType: 1,
+            renderLargerThumbnail: true,
+            sourceUrl: pp
+          }
+        }
+      });
+    }
+  }
+            }
