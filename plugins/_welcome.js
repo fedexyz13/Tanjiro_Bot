@@ -6,7 +6,6 @@ export async function before(m, { conn}) {
   const groupMetadata = await conn.groupMetadata(m.chat);
   const participants = m.messageStubParameters || [];
   const fecha = new Date().toLocaleDateString('es-ES');
-  const audioBienvenida = 'https://files.catbox.moe/wi4u63.mp4';
   const imagenDefecto = 'https://files.catbox.moe/wav09n.jpg';
 
   for (const user of participants) {
@@ -15,34 +14,32 @@ export async function before(m, { conn}) {
     const tag = '@' + user.split('@')[0];
 
     const bienvenida = `
-╭─── 🌅 Bienvenida al Dojo Solar ───╮
+╭─── 🌸 Bienvenida al Dojo Solar ───╮
 │
-│ 🧣 *${name}* se ha unido al dojo Tanjiro.
+│ 🧣 *${name}* ha sido invocado con aliento solar.
 │ 📅 *Fecha:* ${fecha}
-│ 🏷️ *ID:* ${user}
-│ 💬 *Grupo:* *${groupMetadata.subject}*
+│ 🆔 *ID:* ${user}
+│ 🏡 *Grupo:* *${groupMetadata.subject}*
 │
-│ Respira profundo, honra el grupo
-│ y canaliza el Ki hacia la armonía.
-│ Que tu estancia sea legendaria 🗡️
+│ Que tu energía fluya con respeto.
+│ Respira en armonía y honra la paz del grupo.
 │
-╰──────────────────────────────╯`.trim();
+╰────────────────────────────────╯`.trim();
 
     const despedida = `
 ╭─── 🍂 Despedida del Dojo ───╮
 │
-│ 🧣 *${name}* ha abandonado el dojo solar.
+│ 🧣 *${name}* ha dejado el dojo con dignidad.
 │ 📅 *Fecha:* ${fecha}
-│ 🏷️ *ID:* ${user}
-│ 💬 *Grupo:* *${groupMetadata.subject}*
+│ 🆔 *ID:* ${user}
+│ 🏡 *Grupo:* *${groupMetadata.subject}*
 │
-│ Que el viento te lleve suave
-│ y el sol ilumine tu próximo destino 🐾
+│ Que el sol te guíe hacia nuevos senderos 🌄
+│ Respira libre y lleva contigo el Ki de la calma.
 │
 ╰──────────────────────────────╯`.trim();
 
-    // BIENVENIDA
-    if (m.messageStubType === 27) {
+    if (m.messageStubType === 27 || m.messageStubType === 31) {
       await conn.sendMessage(m.chat, {
         image: { url: pp},
         caption: bienvenida,
