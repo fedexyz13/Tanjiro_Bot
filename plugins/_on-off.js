@@ -1,125 +1,124 @@
-import { createHash} from 'crypto';
 import fetch from 'node-fetch';
 
-// 🌅 Canal oficial del Dojo Solar
+// 🧣 Canal oficial del Dojo
 const channelRD = {
   id: '120363402097425674@newsletter',
   name: '会 Tanjiro_Bot 🧣'
 };
 
-const handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isROwner}) => {
-  let chat = global.db.data.chats[m.chat];
-  let user = global.db.data.users[m.sender];
-  let bot = global.db.data.settings[conn.user.jid] || {};
-  let type = command.toLowerCase();
+const handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin}) => {
+  const chat = global.db.data.chats[m.chat];
+  const bot = global.db.data.settings[conn.user.jid] || {};
+  const type = command.toLowerCase();
   let isAll = false;
-
   let isEnable = chat[type] || false;
 
-  if (args[0] === 'on' || args[0] === 'enable') {
+  const toggle = args[0];
+  if (toggle === 'on' || toggle === 'enable') {
     isEnable = true;
-} else if (args[0] === 'off' || args[0] === 'disable') {
+} else if (toggle === 'off' || toggle === 'disable') {
     isEnable = false;
 } else {
-    const estado = isEnable? 'ON': 'OFF';
+    const estado = isEnable? '🟢 ACTIVADO': '🔴 DESACTIVADO';
     return conn.sendMessage(m.chat, {
       text: `
-╭───── ⚙️ *Panel TanjiroBot* ─────╮
-│ 🔮 *Modo:* 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅
-│ 🧣 *Comando:* *${command}*
-│ 💠 *Estado:* ${estado}
-╰───────────────────────────────╯`.trim(),
+╭──── ⚙️ *TanjiroBot - Técnica Espiritual* ────╮
+│ 🌕 *Técnica:* ${type}
+│ 📜 *Estado actual:* ${estado}
+│ 🧩 Usa:
+│ ┣ ${usedPrefix}${command} on
+│ ┗ ${usedPrefix}${command} off
+╰────────────────────────────────────────────╯`.trim(),
       contextInfo: {
         mentionedJid: [m.sender],
-        forwardingScore: 999,
         isForwarded: true,
+        forwardingScore: 999,
         forwardedNewsletterMessageInfo: {
           newsletterJid: channelRD.id,
-          serverMessageId: 710,
+          serverMessageId: 712,
           newsletterName: channelRD.name
 }
 }
 }, { quoted: m});
 }
 
+  const requireAdmin =!m.isGroup || isOwner || isAdmin;
+
+  const updateSetting = (scope, key) => {
+    if (!requireAdmin) throw '⚠️ Solo un pilar puede modificar esta técnica.';
+    scope[key] = isEnable;
+};
+
   switch (type) {
     case 'welcome':
     case 'bv':
     case 'bienvenida':
-      if (!m.isGroup) { if (!isOwner) throw false;} else if (!isAdmin) throw false;
-      chat.welcome = isEnable;
+      updateSetting(chat, 'welcome');
       break;
     case 'antisubbots':
     case 'antisub':
     case 'antisubot':
     case 'antibot2':
-      if (m.isGroup &&!(isAdmin || isOwner)) throw false;
-      chat.antiBot2 = isEnable;
+      updateSetting(chat, 'antiBot2');
       break;
     case 'modoadmin':
     case 'soloadmin':
-      if (m.isGroup &&!(isAdmin || isOwner)) throw false;
-      chat.modoadmin = isEnable;
+      updateSetting(chat, 'modoadmin');
       break;
     case 'reaction':
     case 'reaccion':
     case 'emojis':
-      if (!m.isGroup) { if (!isOwner) throw false;} else if (!isAdmin) throw false;
-      chat.reaction = isEnable;
+      updateSetting(chat, 'reaction');
       break;
     case 'nsfw':
     case 'nsfwhot':
     case 'nsfwhorny':
-      if (!m.isGroup) { if (!isOwner) throw false;} else if (!isAdmin) throw false;
-      chat.nsfw = isEnable;
+      updateSetting(chat, 'nsfw');
       break;
     case 'jadibotmd':
     case 'modejadibot':
       isAll = true;
-      if (!isOwner) throw false;
+      if (!isOwner) throw '⚠️ Solo el maestro del dojo puede usar esta técnica.';
       bot.jadibotmd = isEnable;
       break;
     case 'detect':
     case 'avisos':
-      if (!m.isGroup) { if (!isOwner) throw false;} else if (!isAdmin) throw false;
-      chat.detect = isEnable;
+      updateSetting(chat, 'detect');
       break;
     case 'detect2':
     case 'eventos':
-      if (!m.isGroup) { if (!isOwner) throw false;} else if (!isAdmin) throw false;
-      chat.detect2 = isEnable;
+      updateSetting(chat, 'detect2');
       break;
     case 'antilink':
-      if (m.isGroup &&!(isAdmin || isOwner)) throw false;
-      chat.antiLink = isEnable;
+      updateSetting(chat, 'antiLink');
       break;
     case 'antilink2':
-      if (m.isGroup &&!(isAdmin || isOwner)) throw false;
-      chat.antiLink2 = isEnable;
+      updateSetting(chat, 'antiLink2');
       break;
     default:
-      return conn.reply(m.chat, '⚠️ Técnica desconocida. Ese comando no existe en el pergamino.', m);
+      return conn.reply(m.chat, '🥋 Técnica desconocida. Revisa el pergamino del dojo.', m);
 }
 
   chat[type] = isEnable;
 
+  const mensaje = `
+🧣 *Técnica Aplicada: ${type}*
+━━━━━━━━━━━━━━━━━━━━━━
+🎛 Estado: ${isEnable? 'ACTIVADO': 'DESACTIVADO'}
+${isAll? '🌐 Aplicación global al alma del bot.': '👥 Técnica usada solo en este grupo.'}
+━━━━━━━━━━━━━━━━━━━━━━
+🌅 Que el aliento solar te acompañe.
+`.trim();
+
   conn.sendMessage(m.chat, {
-    text: `
-🎋 *TanjiroBot - Técnica aplicada*
-╭━━━━━━━━━━━━━━━━━━━●
-🔰 *Técnica:* ${type}
-💠 *Estado:* ${isEnable? 'ON': 'OFF'}
-${isAll? '🌐 Aplicado globalmente.': '👥 Aplicado solo en este grupo.'}
-╰━━━━━━━━━━━━━━━━━━━●
-🌅 Que tu Ki guíe el equilibrio del dojo.
-`.trim(),
+    text: mensaje,
     contextInfo: {
       mentionedJid: [m.sender],
       forwardingScore: 999,
       isForwarded: true,
       forwardedNewsletterMessageInfo: {
         newsletterJid: channelRD.id,
-        serverMessageId: 711,
+        serverMessageId: 713,
         newsletterName: channelRD.name
 }
 }
@@ -132,9 +131,8 @@ handler.help = [
   'nsfwhorny','jadibotmd','modejadibot','detect','avisos','detect2','eventos',
   'antilink','antilink2'
 ];
-handler.tags = ['group','settings'];
+handler.tags = ['group', 'settings'];
 handler.command = handler.help;
 handler.register = true;
 
 export default handler;
-` que añada botones interactivos o efectos visuales? También puedo ayudarte.
