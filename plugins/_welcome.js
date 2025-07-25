@@ -1,48 +1,42 @@
-import fetch from 'node-fetch';
-
 export async function before(m, { conn}) {
   if (!m.isGroup ||!m.messageStubType ||!m.messageStubParameters) return;
 
   const groupMetadata = await conn.groupMetadata(m.chat);
   const participants = m.messageStubParameters || [];
-  const fecha = new Date().toLocaleDateString('es-ES');
-  const imagenDefecto = 'https://files.catbox.moe/wav09n.jpg';
+  const date = new Date();
+  const fecha = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
   for (const user of participants) {
     const name = await conn.getName(user);
-    const pp = await conn.profilePictureUrl(user, 'image').catch(() => imagenDefecto);
+    const pp = await conn.profilePictureUrl(user, 'image').catch(() =>
+      'https://files.catbox.moe/wav09n.jpg'
+);
     const tag = '@' + user.split('@')[0];
 
     const bienvenida = `
-╭─── 🌸 Bienvenida al Dojo Solar ───╮
-│
-│ 🧣 *${name}* ha sido invocado con aliento solar.
-│ 📅 *Fecha:* ${fecha}
-│ 🆔 *ID:* ${user}
-│ 🏡 *Grupo:* *${groupMetadata.subject}*
-│
-│ Que tu energía fluya con respeto.
-│ Respira en armonía y honra la paz del grupo.
-│
-╰────────────────────────────────╯`.trim();
+╭─── 🎋 Bienvenida 🎋 ───╮
+👤 Nombre: *${name}*
+📱 ID: ${user}
+📆 Fecha: ${fecha}
+👥 Grupo: *${groupMetadata.subject}*
+🙌 ${tag} ha sido invocado al dojo.
+Por favor, lee las reglas y respira en armonía.
+╰───────────────────────╯`.trim();
 
     const despedida = `
-╭─── 🍂 Despedida del Dojo ───╮
-│
-│ 🧣 *${name}* ha dejado el dojo con dignidad.
-│ 📅 *Fecha:* ${fecha}
-│ 🆔 *ID:* ${user}
-│ 🏡 *Grupo:* *${groupMetadata.subject}*
-│
-│ Que el sol te guíe hacia nuevos senderos 🌄
-│ Respira libre y lleva contigo el Ki de la calma.
-│
-╰──────────────────────────────╯`.trim();
+╭─── 🍂 Despedida 🍂 ───╮
+👤 Nombre: *${name}*
+📱 ID: ${user}
+📆 Fecha: ${fecha}
+👥 Grupo: *${groupMetadata.subject}*
+📤 ${tag} ha abandonado el camino.
+¡Buena suerte en tu nueva misión!
+╰───────────────────────╯`.trim();
 
+    // BIENVENIDA
     if (m.messageStubType === 27 || m.messageStubType === 31) {
       await conn.sendMessage(m.chat, {
-        image: { url: pp},
-        caption: bienvenida,
+        text: bienvenida,
         mentions: [user],
         contextInfo: {
           externalAdReply: {
@@ -57,4 +51,4 @@ export async function before(m, { conn}) {
       });
     }
   }
-            }
+}
