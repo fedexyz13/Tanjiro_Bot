@@ -21,17 +21,13 @@ const handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, i
 } else if (args[0] === 'off' || args[0] === 'disable') {
     isEnable = false;
 } else {
-    const estado = isEnable? '🟢 ACTIVADO': '🔴 DESACTIVADO';
+    const estado = isEnable? 'ON': 'OFF';
     return conn.sendMessage(m.chat, {
       text: `
 ╭───── ⚙️ *Panel TanjiroBot* ─────╮
 │ 🔮 *Modo:* 𝖯𝗋𝗂𝗇𝖼𝗂𝗉𝖺𝗅
 │ 🧣 *Comando:* *${command}*
 │ 💠 *Estado:* ${estado}
-│
-│ 🛠 Configuración:
-│ • *${usedPrefix}${command} on* → Activar
-│ • *${usedPrefix}${command} off* → Desactivar
 ╰───────────────────────────────╯`.trim(),
       contextInfo: {
         mentionedJid: [m.sender],
@@ -110,11 +106,11 @@ const handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, i
   conn.sendMessage(m.chat, {
     text: `
 🎋 *TanjiroBot - Técnica aplicada*
-╭━━━━━━━━━━━━━━━━━━━━━●
+╭━━━━━━━━━━━━━━━━━━━●
 🔰 *Técnica:* ${type}
-💠 *Estado:* ${isEnable? 'ACTIVADO': 'DESACTIVADO'}
+💠 *Estado:* ${isEnable? 'ON': 'OFF'}
 ${isAll? '🌐 Aplicado globalmente.': '👥 Aplicado solo en este grupo.'}
-╰━━━━━━━━━━━━━━━━━━━━━●
+╰━━━━━━━━━━━━━━━━━━━●
 🌅 Que tu Ki guíe el equilibrio del dojo.
 `.trim(),
     contextInfo: {
